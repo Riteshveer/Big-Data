@@ -22,27 +22,25 @@ export const useHowler = () => {
   const enabledVolume = ref<number>(0);
 
   const handleUnlocked = () => {
+    if (howlerUnlocked.value) return;
     howlerUnlocked.value = true;
 
-    // Disable sounds completely on touch devices
-    if (isTouch.value) {
-      soundsEnabled.value = false;
-      return;
-    }
-
-    // Always enable sounds on every visit
+    // Always enable sounds on every visit (desktop + mobile)
     soundsEnabled.value = true;
   };
 
   const tick = () => {
     if (!howlerUnlocked.value) {
-      if (Howler.ctx.state !== "running") return;
+      if (!Howler.ctx || Howler.ctx.state !== "running") return;
       handleUnlocked();
-    } else if (!isTouch.value) {
-      // Only process sounds on non-touch devices
-      contactTick();
-      roomTick();
+    } else {
+      // Process ambient sounds only on desktop
+      if (!isTouch.value) {
+        contactTick();
+        roomTick();
+      }
 
+      // Volume ramping works for both desktop and mobile
       const currentVolume = Howler.volume();
       if (currentVolume > 0.99 && enabledVolume.value === 1) {
         return;
@@ -57,13 +55,13 @@ export const useHowler = () => {
   };
 
   const handleKeyPress = (event: KeyboardEvent) => {
-    if (event.code === "KeyM" && !isTouch.value) {
+    if (event.code === "KeyM") {
       soundsEnabled.value = !soundsEnabled.value;
     }
   };
 
   watch(soundsEnabled, (newVal) => {
-    if (!isFeatureEnabled("sounds") || isTouch.value) return;
+    if (!isFeatureEnabled("sounds")) return;
     enabledVolume.value = newVal ? 1 : 0;
   });
 
@@ -74,6 +72,25 @@ export const useHowler = () => {
         howl.load();
       }
     }
+  };
+
+  // Unlock audio context on first user interaction (required by all browsers)
+  const setupUnlock = () => {
+    const unlockAudio = () => {
+      if (Howler.ctx && Howler.ctx.state !== "running") {
+        Howler.ctx.resume();
+      }
+      window.removeEventListener("click", unlockAudio);
+      window.removeEventListener("touchstart", unlockAudio);
+      window.removeEventListener("touchend", unlockAudio);
+      window.removeEventListener("keydown", unlockAudio);
+      window.removeEventListener("scroll", unlockAudio);
+    };
+    window.addEventListener("click", unlockAudio, { once: true });
+    window.addEventListener("touchstart", unlockAudio, { once: true });
+    window.addEventListener("touchend", unlockAudio, { once: true });
+    window.addEventListener("keydown", unlockAudio, { once: true });
+    window.addEventListener("scroll", unlockAudio, { once: true });
   };
 
   onMounted(() => {
@@ -88,22 +105,9 @@ export const useHowler = () => {
     window.addEventListener("visibilitychange", handleVisibilityChange);
     window.addEventListener("keydown", handleKeyPress);
 
-    if (!isTouch.value) {
-      loadAllSounds();
-
-      // Auto-unlock audio on first user interaction
-      const unlockAudio = () => {
-        if (Howler.ctx && Howler.ctx.state !== "running") {
-          Howler.ctx.resume();
-        }
-        window.removeEventListener("click", unlockAudio);
-        window.removeEventListener("touchstart", unlockAudio);
-        window.removeEventListener("keydown", unlockAudio);
-      };
-      window.addEventListener("click", unlockAudio, { once: true });
-      window.addEventListener("touchstart", unlockAudio, { once: true });
-      window.addEventListener("keydown", unlockAudio, { once: true });
-    }
+    // Load sounds and setup unlock for ALL devices
+    loadAllSounds();
+    setupUnlock();
   });
 
   onUnmounted(() => {
