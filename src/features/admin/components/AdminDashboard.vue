@@ -21,8 +21,7 @@ const handleLogout = () => {
 };
 
 const goHome = () => {
-  window.history.pushState(null, "", "/");
-  window.dispatchEvent(new PopStateEvent("popstate"));
+  window.location.href = "/";
 };
 </script>
 
