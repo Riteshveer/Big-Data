@@ -153,6 +153,10 @@ const addSection = async (e: Event) => {
     await loadSections(currentProjectId.value);
     const newSec = sections.value[sections.value.length - 1];
     if (newSec) expandedSection.value = newSec.id;
+    // Clear description form for the new section
+    newDescTitle.value = "";
+    newDescText.value = "";
+    editingDescId.value = null;
   } catch (err: any) { showMsg(`Error: ${err.message}`); }
   uploadingImage.value = false;
   input.value = "";
