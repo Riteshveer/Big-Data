@@ -396,14 +396,13 @@ onMounted(() => {
 
     &-label {
       display: block;
-      background: #313244;
+      background: #1e1e2e;
       color: #a6adc8;
       font-size: 0.7rem;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.05em;
-      padding: 8px 20px;
-      border-bottom: 1px solid #333;
+      padding: 12px 20px 0 20px;
     }
 
     &-block {
