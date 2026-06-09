@@ -27,9 +27,20 @@ export type TagVariant =
   | "docker"
   | "powerbi"
   | "grafana"
-  | "python";
+  | "python"
+  | "sql"
+  | "azure"
+  | "aws"
+  | "spark"
+  | "pandas"
+  | "numpy"
+  | "scikit-learn"
+  | "git"
+  | "linux"
+  | "tableau"
+  | string;
 
-export const tagLabels = {
+export const tagLabels: Record<string, string> = {
   three: "Three.js",
   websockets: "WebSockets",
   react: "React",
@@ -59,4 +70,14 @@ export const tagLabels = {
   powerbi: "Power BI",
   grafana: "Grafana",
   python: "Python",
-} as const satisfies Record<TagVariant, string>;
+  sql: "SQL",
+  azure: "Azure",
+  aws: "AWS",
+  spark: "Spark",
+  pandas: "Pandas",
+  numpy: "NumPy",
+  "scikit-learn": "Scikit-Learn",
+  git: "Git",
+  linux: "Linux",
+  tableau: "Tableau",
+};

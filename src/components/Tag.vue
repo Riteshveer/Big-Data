@@ -7,11 +7,12 @@ const props = defineProps<{
 }>();
 
 const classes = computed(() => ["tag", `tag-variant-${props.variant}`]);
+const label = computed(() => tagLabels[props.variant] || props.variant);
 </script>
 
 <template>
   <div :class="classes">
-    <p class="tag-copy">{{ tagLabels[props.variant] }}</p>
+    <p class="tag-copy">{{ label }}</p>
   </div>
 </template>
 
@@ -166,6 +167,63 @@ const classes = computed(() => ["tag", `tag-variant-${props.variant}`]);
       background-color: #3776ab;
       color: white;
     }
+
+    &-sql {
+      background-color: #e38c00;
+      color: white;
+    }
+
+    &-azure {
+      background-color: #0078d4;
+      color: white;
+    }
+
+    &-aws {
+      background-color: #ff9900;
+      color: #1a1200;
+    }
+
+    &-spark {
+      background-color: #e25a1c;
+      color: white;
+    }
+
+    &-pandas {
+      background-color: #150458;
+      color: white;
+    }
+
+    &-numpy {
+      background-color: #4dabcf;
+      color: white;
+    }
+
+    &-scikit-learn {
+      background-color: #f89939;
+      color: white;
+    }
+
+    &-git {
+      background-color: #f05032;
+      color: white;
+    }
+
+    &-linux {
+      background-color: #333;
+      color: #fcc624;
+    }
+
+    &-tableau {
+      background-color: #e97627;
+      color: white;
+    }
+  }
+
+  // Default style for any unknown tag
+  &:not([class*="tag-variant-three"]):not([class*="tag-variant-react"]):not([class*="tag-variant-websockets"]):not([class*="tag-variant-redis"]):not([class*="tag-variant-javascript"]):not([class*="tag-variant-node"]):not([class*="tag-variant-next"]):not([class*="tag-variant-kubernetes"]):not([class*="tag-variant-postgresql"]):not([class*="tag-variant-pyspark"]):not([class*="tag-variant-kafka"]):not([class*="tag-variant-airflow"]):not([class*="tag-variant-sql"]):not([class*="tag-variant-python"]):not([class*="tag-variant-docker"]):not([class*="tag-variant-azure"]):not([class*="tag-variant-aws"]) {
+    color: var(--color-text-400);
+    border-color: var(--color-grayscale-400);
+  }
   }
 }
 </style>
