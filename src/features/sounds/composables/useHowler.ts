@@ -30,9 +30,12 @@ export const useHowler = () => {
       return;
     }
 
-    // Always enable sounds/music when someone visits the page
-    soundsEnabled.value = true;
-    localStorage.setItem("portfolio-soundsEnabled", "true");
+    // Enable sounds unless user previously turned them off
+    const stored = localStorage.getItem("portfolio-soundsEnabled");
+    soundsEnabled.value = stored !== "false";
+    if (stored === null) {
+      localStorage.setItem("portfolio-soundsEnabled", "true");
+    }
   };
 
   const tick = () => {
@@ -83,7 +86,7 @@ export const useHowler = () => {
     Howler.volume(0);
 
     if (howlerUnlocked.value) {
-      soundsEnabled.value = localStorage.getItem("portfolio-soundsEnabled") === "true";
+      soundsEnabled.value = localStorage.getItem("portfolio-soundsEnabled") !== "false";
     }
 
     gsap.ticker.add(tick);
@@ -92,6 +95,19 @@ export const useHowler = () => {
 
     if (!isTouch.value) {
       loadAllSounds();
+
+      // Auto-unlock audio on first user interaction
+      const unlockAudio = () => {
+        if (Howler.ctx && Howler.ctx.state !== "running") {
+          Howler.ctx.resume();
+        }
+        window.removeEventListener("click", unlockAudio);
+        window.removeEventListener("touchstart", unlockAudio);
+        window.removeEventListener("keydown", unlockAudio);
+      };
+      window.addEventListener("click", unlockAudio, { once: true });
+      window.addEventListener("touchstart", unlockAudio, { once: true });
+      window.addEventListener("keydown", unlockAudio, { once: true });
     }
   });
 
