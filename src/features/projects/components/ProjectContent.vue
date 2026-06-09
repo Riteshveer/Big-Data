@@ -452,7 +452,7 @@ onMounted(() => {
       border: 1px solid #333;
       border-radius: 8px;
       padding: 12px 20px;
-      margin-top: 6px;
+      margin-top: 2px;
     }
 
     &-output-label {
