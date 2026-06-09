@@ -11,6 +11,16 @@ interface SectionDescription {
   sort_order: number;
 }
 
+interface SectionCodeCell {
+  id: number;
+  image_id: number;
+  title: string | null;
+  code: string;
+  language: string;
+  output: string | null;
+  sort_order: number;
+}
+
 interface ProjectSection {
   id: number;
   url: string;
@@ -18,6 +28,7 @@ interface ProjectSection {
   caption: string | null;
   sort_order: number;
   descriptions: SectionDescription[];
+  codeCells: SectionCodeCell[];
 }
 
 interface Project {
@@ -62,6 +73,12 @@ const newDescText = ref("");
 const editingDescId = ref<number | null>(null);
 const editDescTitle = ref("");
 const editDescText = ref("");
+
+// Code cell form
+const newCodeTitle = ref("");
+const newCodeContent = ref("");
+const newCodeLanguage = ref("python");
+const newCodeOutput = ref("");
 
 const load = async () => {
   loading.value = true;
@@ -275,10 +292,41 @@ const deleteDescription = async (sectionId: number, descId: number) => {
   } catch (e: any) { showMsg(`Error: ${e.message}`); }
 };
 
+// --- Code Cells ---
+const addCodeCell = async (sectionId: number) => {
+  if (!currentProjectId.value || !newCodeContent.value.trim()) { showMsg("Error: Code content is required"); return; }
+  const section = sections.value.find(s => s.id === sectionId);
+  const nextOrder = (section as any)?.codeCells?.length || 0;
+  try {
+    await api(`/api/admin/projects/${currentProjectId.value}/images/${sectionId}/code-cells`, {
+      method: "POST",
+      body: JSON.stringify({ title: newCodeTitle.value.trim() || null, code: newCodeContent.value, language: newCodeLanguage.value, output: newCodeOutput.value.trim() || null, sort_order: nextOrder }),
+    });
+    newCodeTitle.value = "";
+    newCodeContent.value = "";
+    newCodeLanguage.value = "python";
+    newCodeOutput.value = "";
+    showMsg("Code cell added!");
+    await loadSections(currentProjectId.value);
+  } catch (e: any) { showMsg(`Error: ${e.message}`); }
+};
+
+const deleteCodeCell = async (sectionId: number, cellId: number) => {
+  if (!confirm("Delete this code cell?") || !currentProjectId.value) return;
+  try {
+    await api(`/api/admin/projects/${currentProjectId.value}/images/${sectionId}/code-cells/${cellId}`, { method: "DELETE" });
+    await loadSections(currentProjectId.value);
+  } catch (e: any) { showMsg(`Error: ${e.message}`); }
+};
+
 const toggleSection = (id: number) => {
   expandedSection.value = expandedSection.value === id ? null : id;
   newDescTitle.value = "";
   newDescText.value = "";
+  newCodeTitle.value = "";
+  newCodeContent.value = "";
+  newCodeLanguage.value = "python";
+  newCodeOutput.value = "";
   editingDescId.value = null;
 };
 
@@ -434,6 +482,40 @@ onMounted(load);
                 <textarea v-model="newDescText" class="field-input" rows="2" placeholder="Description text (required)"></textarea>
                 <button class="btn-primary btn-sm-primary" @click="addDescription(section.id)">+ Add</button>
               </div>
+
+              <!-- Code Cells -->
+              <div class="code-cells-area">
+                <h5>💻 Code Cells</h5>
+                <div class="desc-list" v-if="(section as any).codeCells?.length">
+                  <div v-for="cell in (section as any).codeCells" :key="cell.id" class="desc-item">
+                    <div class="desc-content">
+                      <p class="desc-title" v-if="cell.title"><strong>{{ cell.title }}</strong> <span style="color:#6b7394">({{ cell.language }})</span></p>
+                      <p class="desc-text">{{ cell.code.slice(0, 80) }}{{ cell.code.length > 80 ? '...' : '' }}</p>
+                    </div>
+                    <div class="desc-actions">
+                      <button class="btn-xs btn-danger-xs" @click="deleteCodeCell(section.id, cell.id)">✕</button>
+                    </div>
+                  </div>
+                </div>
+                <p v-else class="empty">No code cells yet.</p>
+
+                <!-- Add code cell form -->
+                <div class="add-desc-form">
+                  <h6>Add Code Cell</h6>
+                  <input v-model="newCodeTitle" class="field-input" placeholder="Cell title (optional, e.g. 'Parquet File Read')" />
+                  <select v-model="newCodeLanguage" class="field-input" style="max-width:200px">
+                    <option value="python">Python</option>
+                    <option value="sql">SQL</option>
+                    <option value="scala">Scala</option>
+                    <option value="bash">Bash</option>
+                    <option value="java">Java</option>
+                    <option value="javascript">JavaScript</option>
+                  </select>
+                  <textarea v-model="newCodeContent" class="field-input field-code" rows="6" placeholder="Paste your code here..."></textarea>
+                  <textarea v-model="newCodeOutput" class="field-input" rows="2" placeholder="Output (optional, e.g. 'Total rows: 1,234,567')"></textarea>
+                  <button class="btn-primary btn-sm-primary" @click="addCodeCell(section.id)">+ Add Code Cell</button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -580,4 +662,8 @@ onMounted(load);
 .msg-error { color: #ff4d6d; }
 .loading { color: #8892b0; }
 .empty { color: #6b7394; font-size: 0.8rem; font-style: italic; }
+
+.code-cells-area { border-top: 1px solid #2e3250; padding-top: 14px; margin-top: 14px; }
+.code-cells-area h5 { color: #c9d1e8; font-size: 0.85rem; margin-bottom: 10px; }
+.field-code { font-family: "Consolas", "Monaco", "Courier New", monospace; font-size: 0.8rem; white-space: pre; }
 </style>

@@ -16,12 +16,22 @@ interface SectionDescription {
   sort_order: number;
 }
 
+interface SectionCodeCell {
+  id: number;
+  title: string | null;
+  code: string;
+  language: string;
+  output: string | null;
+  sort_order: number;
+}
+
 interface ProjectSection {
   id: number;
   url: string;
   alt: string | null;
   sort_order: number;
   descriptions: SectionDescription[];
+  codeCells: SectionCodeCell[];
 }
 
 const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:8787";
@@ -76,6 +86,7 @@ const loadSections = async () => {
           alt: img.alt,
           sort_order: img.sort_order,
           descriptions: (img.descriptions || []).sort((a: any, b: any) => a.sort_order - b.sort_order),
+          codeCells: (img.codeCells || []).sort((a: any, b: any) => a.sort_order - b.sort_order),
         }))
         .sort((a: ProjectSection, b: ProjectSection) => a.sort_order - b.sort_order);
 
@@ -141,6 +152,20 @@ onMounted(() => {
           >
             <h4 v-if="desc.title" class="project-section-desc-title">{{ desc.title }}</h4>
             <p class="project-section-desc-text">{{ desc.text }}</p>
+          </div>
+
+          <!-- Code cells -->
+          <div
+            v-for="cell in section.codeCells"
+            :key="`code-${cell.id}`"
+            class="project-section-code"
+          >
+            <p v-if="cell.title" class="project-section-code-title">{{ cell.title }}</p>
+            <pre class="project-section-code-block"><code>{{ cell.code }}</code></pre>
+            <div v-if="cell.output" class="project-section-code-output">
+              <span class="project-section-code-output-label">Output:</span>
+              <pre class="project-section-code-output-content">{{ cell.output }}</pre>
+            </div>
           </div>
         </div>
       </div>
@@ -319,6 +344,76 @@ onMounted(() => {
 
       @include mixins.mq("md") {
         font-size: var(--font-size-md);
+      }
+    }
+  }
+
+  &-code {
+    margin-bottom: var(--space-md);
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    &-title {
+      font-size: var(--font-size-sm);
+      font-weight: 600;
+      color: var(--color-text-300);
+      margin-bottom: var(--space-xxs);
+
+      @include mixins.mq("md") {
+        font-size: var(--font-size-md);
+      }
+    }
+
+    &-block {
+      background: #2b2b2b;
+      color: #f8f8f2;
+      border-radius: 8px;
+      padding: 16px 20px;
+      font-family: "Consolas", "Monaco", "Courier New", monospace;
+      font-size: 0.8rem;
+      line-height: 1.6;
+      overflow-x: auto;
+      white-space: pre;
+      margin: 0;
+
+      @include mixins.mq("md") {
+        font-size: 0.85rem;
+        padding: 20px 24px;
+      }
+
+      code {
+        color: inherit;
+        font-family: inherit;
+      }
+    }
+
+    &-output {
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 0 0 8px 8px;
+      padding: 12px 20px;
+      margin-top: -8px;
+
+      &-label {
+        font-size: 0.7rem;
+        font-weight: 700;
+        color: #888;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        display: block;
+        margin-bottom: 6px;
+      }
+
+      &-content {
+        font-family: "Consolas", "Monaco", "Courier New", monospace;
+        font-size: 0.75rem;
+        color: #aaffaa;
+        line-height: 1.5;
+        white-space: pre;
+        margin: 0;
+        overflow-x: auto;
       }
     }
   }

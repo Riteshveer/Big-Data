@@ -55,7 +55,10 @@ projects.get("/:slug", async (c) => {
       const descriptions = await c.env.DB.prepare(
         "SELECT * FROM section_descriptions WHERE image_id = ? ORDER BY sort_order ASC"
       ).bind(img.id).all();
-      return { ...img, descriptions: descriptions.results };
+      const codeCells = await c.env.DB.prepare(
+        "SELECT * FROM section_code_cells WHERE image_id = ? ORDER BY sort_order ASC"
+      ).bind(img.id).all();
+      return { ...img, descriptions: descriptions.results, codeCells: codeCells.results };
     })
   );
 
@@ -265,6 +268,48 @@ projects.put("/:id/images/:imgId/descriptions/:descId", async (c) => {
 projects.delete("/:id/images/:imgId/descriptions/:descId", async (c) => {
   const descId = c.req.param("descId");
   await c.env.DB.prepare("DELETE FROM section_descriptions WHERE id = ?").bind(descId).run();
+  return c.json({ success: true });
+});
+
+// --- Section Code Cells ---
+
+// POST /api/projects/:id/images/:imgId/code-cells
+projects.post("/:id/images/:imgId/code-cells", async (c) => {
+  const imgId = c.req.param("imgId");
+  const body = await c.req.json();
+
+  const result = await c.env.DB.prepare(
+    "INSERT INTO section_code_cells (image_id, title, code, language, output, sort_order) VALUES (?, ?, ?, ?, ?, ?)"
+  ).bind(imgId, body.title || null, body.code || "", body.language || "python", body.output || null, body.sort_order || 0).run();
+
+  return c.json({ id: result.meta.last_row_id, success: true }, 201);
+});
+
+// PUT /api/projects/:id/images/:imgId/code-cells/:cellId
+projects.put("/:id/images/:imgId/code-cells/:cellId", async (c) => {
+  const cellId = c.req.param("cellId");
+  const body = await c.req.json();
+
+  const sets: string[] = [];
+  const values: any[] = [];
+
+  if (body.title !== undefined) { sets.push("title = ?"); values.push(body.title); }
+  if (body.code !== undefined) { sets.push("code = ?"); values.push(body.code); }
+  if (body.language !== undefined) { sets.push("language = ?"); values.push(body.language); }
+  if (body.output !== undefined) { sets.push("output = ?"); values.push(body.output); }
+  if (body.sort_order !== undefined) { sets.push("sort_order = ?"); values.push(body.sort_order); }
+
+  if (sets.length === 0) return c.json({ success: true });
+
+  values.push(cellId);
+  await c.env.DB.prepare(`UPDATE section_code_cells SET ${sets.join(", ")} WHERE id = ?`).bind(...values).run();
+  return c.json({ success: true });
+});
+
+// DELETE /api/projects/:id/images/:imgId/code-cells/:cellId
+projects.delete("/:id/images/:imgId/code-cells/:cellId", async (c) => {
+  const cellId = c.req.param("cellId");
+  await c.env.DB.prepare("DELETE FROM section_code_cells WHERE id = ?").bind(cellId).run();
   return c.json({ success: true });
 });
 

@@ -61,7 +61,10 @@ app.get("/api/projects/:slug", async (c) => {
       const descriptions = await c.env.DB.prepare(
         "SELECT * FROM section_descriptions WHERE image_id = ? ORDER BY sort_order ASC"
       ).bind(img.id).all();
-      return { ...img, descriptions: descriptions.results };
+      const codeCells = await c.env.DB.prepare(
+        "SELECT * FROM section_code_cells WHERE image_id = ? ORDER BY sort_order ASC"
+      ).bind(img.id).all();
+      return { ...img, descriptions: descriptions.results, codeCells: codeCells.results };
     })
   );
 
