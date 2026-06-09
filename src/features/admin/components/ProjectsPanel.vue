@@ -178,6 +178,7 @@ const updateSectionTitle = async (sectionId: number, newAlt: string) => {
     await api(`/api/admin/projects/${currentProjectId.value}/images/${sectionId}`, {
       method: "PUT", body: JSON.stringify({ alt: newAlt }),
     });
+    showMsg("Section title saved!");
     await loadSections(currentProjectId.value);
   } catch (e: any) { showMsg(`Error: ${e.message}`); }
 };
@@ -379,7 +380,10 @@ onMounted(load);
               <div class="section-detail-controls">
                 <div class="field">
                   <label>Section Title</label>
-                  <input :value="section.alt || ''" class="field-input" @change="(e) => updateSectionTitle(section.id, (e.target as HTMLInputElement).value)" placeholder="e.g. Step 1: Data Pipeline" />
+                  <div class="section-title-row">
+                    <input :id="`section-title-${section.id}`" :value="section.alt || ''" class="field-input" placeholder="e.g. Step 1: Data Pipeline" />
+                    <button class="btn-save-title" @click="updateSectionTitle(section.id, (document.getElementById(`section-title-${section.id}`) as HTMLInputElement).value)">Save</button>
+                  </div>
                 </div>
                 <label class="btn-upload btn-sm-upload">Replace Image<input type="file" accept="image/*" @change="(e) => replaceSectionImage(e, section.id)" hidden /></label>
               </div>
@@ -508,6 +512,11 @@ onMounted(load);
 .section-detail-top { display: flex; gap: 16px; padding-top: 16px; margin-bottom: 20px; }
 .section-detail-img { width: 160px; height: 100px; object-fit: cover; border-radius: 8px; border: 1px solid #2e3250; flex-shrink: 0; }
 .section-detail-controls { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+
+.section-title-row { display: flex; gap: 8px; align-items: center; }
+.section-title-row .field-input { flex: 1; }
+.btn-save-title { background: #4fa3ff; color: #fff; border: none; border-radius: 6px; padding: 8px 14px; font-size: 0.8rem; font-weight: 600; cursor: pointer; white-space: nowrap; }
+.btn-save-title:hover { background: #3b8de6; }
 
 /* Descriptions */
 .desc-area h5 { color: #c9d1e8; font-size: 0.85rem; margin-bottom: 10px; }
