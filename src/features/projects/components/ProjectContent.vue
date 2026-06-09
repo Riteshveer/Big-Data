@@ -234,14 +234,18 @@ onMounted(() => {
   &-image-wrapper {
     position: relative;
     width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
     border-radius: var(--radius-lg);
     overflow: hidden;
     background-color: var(--color-background-300);
+    aspect-ratio: 16 / 9;
   }
 
   &-image {
     width: 100%;
-    height: auto;
+    height: 100%;
+    object-fit: cover;
     display: block;
   }
 
