@@ -9,6 +9,7 @@ const SNORE_INTERVAL = 2.0833332538604736 * 2;
 
 let snoreTimeout: gsap.core.Tween | null = null;
 let currentId: number | undefined;
+let snoreStarted = false;
 
 const scheduleNextSnore = () => {
   if (snoreTimeout) {
@@ -16,17 +17,24 @@ const scheduleNextSnore = () => {
   }
 
   snoreTimeout = gsap.delayedCall(SNORE_INTERVAL, () => {
-    currentId = playSound("snore");
+    // Only play if actually on or near the contact section
+    if (sceneWeights.contact > 0.1) {
+      currentId = playSound("snore");
+    }
     scheduleNextSnore();
   });
 };
 
-scheduleNextSnore();
-playSound("snore");
-
 export const tick = () => {
   const volume = projectVisible.value ? 0 : clamp(sceneWeights.contact * 0.5, 0, 1);
   sprites.contact.howl.volume(volume);
+
+  // Start snore loop only when user first reaches contact section
+  if (!snoreStarted && sceneWeights.contact > 0.1) {
+    snoreStarted = true;
+    currentId = playSound("snore");
+    scheduleNextSnore();
+  }
 };
 
 export const stopSnoreRepetition = () => {
