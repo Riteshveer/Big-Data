@@ -17,8 +17,7 @@ const scheduleNextSnore = () => {
   }
 
   snoreTimeout = gsap.delayedCall(SNORE_INTERVAL, () => {
-    // Only play if actually on or near the contact section
-    if (sceneWeights.contact > 0.1) {
+    if (sceneWeights.contact > 0.01) {
       currentId = playSound("snore");
     }
     scheduleNextSnore();
@@ -30,7 +29,7 @@ export const tick = () => {
   sprites.contact.howl.volume(volume);
 
   // Start snore loop only when user first reaches contact section
-  if (!snoreStarted && sceneWeights.contact > 0.1) {
+  if (!snoreStarted && sceneWeights.contact > 0.01) {
     snoreStarted = true;
     currentId = playSound("snore");
     scheduleNextSnore();

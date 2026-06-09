@@ -34,11 +34,9 @@ export const useHowler = () => {
       if (!Howler.ctx || Howler.ctx.state !== "running") return;
       handleUnlocked();
     } else {
-      // Process ambient sounds only on desktop
-      if (!isTouch.value) {
-        contactTick();
-        roomTick();
-      }
+      // Process ambient sounds on all devices
+      contactTick();
+      roomTick();
 
       // Volume ramping works for both desktop and mobile
       const currentVolume = Howler.volume();
