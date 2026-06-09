@@ -5,7 +5,21 @@ import ProjectComponent from "./ProjectComponent.vue";
 import ArchitectureDiagram from "./ArchitectureDiagram.vue";
 import Link from "../../../components/Link.vue";
 import NextProject from "./NextProject.vue";
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, nextTick } from "vue";
+import hljs from "highlight.js/lib/core";
+import python from "highlight.js/lib/languages/python";
+import sql from "highlight.js/lib/languages/sql";
+import bash from "highlight.js/lib/languages/bash";
+import scala from "highlight.js/lib/languages/scala";
+import java from "highlight.js/lib/languages/java";
+import javascript from "highlight.js/lib/languages/javascript";
+
+hljs.registerLanguage("python", python);
+hljs.registerLanguage("sql", sql);
+hljs.registerLanguage("bash", bash);
+hljs.registerLanguage("scala", scala);
+hljs.registerLanguage("java", java);
+hljs.registerLanguage("javascript", javascript);
 
 import type { ProjectContent, ProjectPreview } from "../../../content/types";
 
@@ -45,6 +59,11 @@ const resolveUrl = (path: string): string => {
   if (!path) return "";
   if (path.startsWith("http")) return path;
   return `${API_BASE}${path}`;
+};
+
+const highlightCode = (code: string): string => {
+  const result = hljs.highlightAuto(code);
+  return result.value;
 };
 
 const loadedPreviews = ref<ProjectPreview[] | null>(null);
@@ -161,7 +180,7 @@ onMounted(() => {
             class="project-section-code"
           >
             <p v-if="cell.title" class="project-section-code-title">{{ cell.title }}</p>
-            <pre class="project-section-code-block"><code>{{ cell.code }}</code></pre>
+            <pre class="project-section-code-block"><code v-html="highlightCode(cell.code)"></code></pre>
             <div v-if="cell.output" class="project-section-code-output">
               <span class="project-section-code-output-label">Output:</span>
               <pre class="project-section-code-output-content">{{ cell.output }}</pre>
@@ -367,8 +386,8 @@ onMounted(() => {
     }
 
     &-block {
-      background: #2b2b2b;
-      color: #f8f8f2;
+      background: #1e1e2e;
+      color: #cdd6f4;
       border-radius: 8px;
       padding: 16px 20px;
       font-family: "Consolas", "Monaco", "Courier New", monospace;
@@ -386,6 +405,25 @@ onMounted(() => {
       code {
         color: inherit;
         font-family: inherit;
+
+        :deep(.hljs-keyword) { color: #cba6f7; }
+        :deep(.hljs-built_in) { color: #89dceb; }
+        :deep(.hljs-string) { color: #a6e3a1; }
+        :deep(.hljs-number) { color: #fab387; }
+        :deep(.hljs-comment) { color: #6c7086; font-style: italic; }
+        :deep(.hljs-function) { color: #89b4fa; }
+        :deep(.hljs-title) { color: #89b4fa; }
+        :deep(.hljs-params) { color: #f9e2af; }
+        :deep(.hljs-variable) { color: #cdd6f4; }
+        :deep(.hljs-attr) { color: #89dceb; }
+        :deep(.hljs-literal) { color: #fab387; }
+        :deep(.hljs-type) { color: #f9e2af; }
+        :deep(.hljs-meta) { color: #f38ba8; }
+        :deep(.hljs-selector-class) { color: #a6e3a1; }
+        :deep(.hljs-name) { color: #89b4fa; }
+        :deep(.hljs-symbol) { color: #f5c2e7; }
+        :deep(.hljs-operator) { color: #94e2d5; }
+        :deep(.hljs-punctuation) { color: #bac2de; }
       }
     }
 
