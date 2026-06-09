@@ -183,10 +183,10 @@ onMounted(() => {
             <div class="project-section-code-wrapper">
               <span class="project-section-code-label">Code:</span>
               <pre class="project-section-code-block"><code v-html="highlightCode(cell.code)"></code></pre>
-            </div>
-            <div v-if="cell.output" class="project-section-code-output">
-              <span class="project-section-code-output-label">Output:</span>
-              <pre class="project-section-code-output-content">{{ cell.output }}</pre>
+              <div v-if="cell.output" class="project-section-code-output">
+                <span class="project-section-code-output-label">Output:</span>
+                <pre class="project-section-code-output-content">{{ cell.output }}</pre>
+              </div>
             </div>
           </div>
         </div>
@@ -391,6 +391,7 @@ onMounted(() => {
     &-wrapper {
       border-radius: 8px;
       overflow: hidden;
+      border: 1px solid #333;
     }
 
     &-label {
@@ -402,6 +403,7 @@ onMounted(() => {
       text-transform: uppercase;
       letter-spacing: 0.05em;
       padding: 8px 20px;
+      border-bottom: 1px solid #333;
     }
 
     &-block {
@@ -448,10 +450,8 @@ onMounted(() => {
 
     &-output {
       background: #1a1a1a;
-      border: 1px solid #333;
-      border-radius: 0 0 8px 8px;
+      border-top: 1px solid #333;
       padding: 12px 20px;
-      margin-top: -8px;
 
       &-label {
         font-size: 0.7rem;
