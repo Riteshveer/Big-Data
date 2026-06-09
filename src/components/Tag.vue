@@ -221,6 +221,4 @@ const label = computed(() => tagLabels[props.variant] || props.variant);
     }
   }
 }
-  }
-}
 </style>
