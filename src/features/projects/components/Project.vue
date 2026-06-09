@@ -46,6 +46,7 @@ const fetchProject = async (project: string | undefined) => {
         description: data.description || "",
         source: data.source_url || undefined,
         live: data.live_url || undefined,
+        poster_url: data.poster_url || undefined,
         components: [],
       } as any;
     } else {

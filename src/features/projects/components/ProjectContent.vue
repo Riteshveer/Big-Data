@@ -100,7 +100,13 @@ onMounted(() => {
 <template>
   <Layout class="project-content">
     <ProjectHero :content="content" :projectId="projectId" />
-    <div class="project-content-components">
+
+    <!-- Project banner/poster image -->
+    <div v-if="(content as any).poster_url" class="project-content-banner">
+      <img :src="resolveUrl((content as any).poster_url)" :alt="content.title" class="project-content-banner-img" />
+    </div>
+
+    <div class="project-content-components" v-if="(content.components && content.components.length) || sections.length || hasDiagram">
       <!-- Dynamic diagram from API (only if not already in static components) -->
       <div v-if="hasDiagram && !hasStaticDiagram" class="grid project-content-grid">
         <ArchitectureDiagram />
@@ -155,6 +161,21 @@ onMounted(() => {
 <style scoped lang="scss">
 .project-content {
   color: var(--color-text-400);
+
+  &-banner {
+    width: 100%;
+    padding: 0 var(--space-outer);
+    margin-bottom: var(--space-lg);
+
+    &-img {
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto;
+      display: block;
+      border-radius: var(--radius-xl);
+      object-fit: cover;
+    }
+  }
 
   &-grid {
     row-gap: var(--space-sm);
