@@ -8,6 +8,7 @@ const username = ref("");
 const password = ref("");
 const error = ref("");
 const loading = ref(false);
+const showPassword = ref(false);
 
 const handleSubmit = async () => {
   error.value = "";
@@ -38,7 +39,12 @@ const handleSubmit = async () => {
         </div>
         <div class="login-field">
           <label>Password</label>
-          <input v-model="password" type="password" autocomplete="current-password" required />
+          <div class="login-password-wrapper">
+            <input v-model="password" :type="showPassword ? 'text' : 'password'" autocomplete="current-password" required />
+            <button type="button" class="login-toggle-pw" @click="showPassword = !showPassword">
+              {{ showPassword ? '🙈' : '👁️' }}
+            </button>
+          </div>
         </div>
         <p v-if="error" class="login-error">{{ error }}</p>
         <button type="submit" class="login-btn" :disabled="loading">
@@ -112,6 +118,29 @@ const handleSubmit = async () => {
 
 .login-field input:focus {
   border-color: #4fa3ff;
+}
+
+.login-password-wrapper {
+  position: relative;
+  display: flex;
+}
+
+.login-password-wrapper input {
+  flex: 1;
+  padding-right: 44px;
+}
+
+.login-toggle-pw {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.1rem;
+  padding: 4px;
+  line-height: 1;
 }
 
 .login-error {

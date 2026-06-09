@@ -12,7 +12,7 @@ const app = new Hono<{ Bindings: Env }>();
 
 // CORS — allow your portfolio domain + localhost for dev
 app.use("*", cors({
-  origin: ["http://localhost:3000", "http://localhost:5173", "https://your-domain.com"],
+  origin: ["http://localhost:3000", "http://localhost:5173", "https://riteshveer.vercel.app", "https://your-domain.com"],
   allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowHeaders: ["Content-Type", "Authorization"],
   maxAge: 86400,
