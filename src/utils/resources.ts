@@ -15,11 +15,7 @@ class Resources extends EventEmitter<{
   ready: void;
   progress: number;
 }> {
-  stage1Sources = sources.filter(s => s.stage === 1);
-  stage2Sources = sources.filter(s => s.stage === 2);
-  stage3Sources = sources.filter(s => s.stage === 3);
-
-  toLoad = this.stage1Sources.length;
+  toLoad = sources.length;
   isReady = false;
   loaded = 0;
   items: Record<string, any> = {};
@@ -43,62 +39,30 @@ class Resources extends EventEmitter<{
   startLoading() {
     if (this.isReady) return;
 
-    // Only load stage 1 initially
-    for (const source of this.stage1Sources) {
-      this.loadSource(source);
-    }
-  }
-
-  private loadSource(source: { name: string; type: string; path: string }) {
-    if (source.type === "gltfModel") {
-      this.loaders.gltfLoader.load(source.path, (file) => {
-        this.sourceLoaded(source, file);
-      });
-    } else if (source.type === "texture") {
-      this.loaders.textureLoader.load(source.path, (file: Texture) => {
-        file.colorSpace = SRGBColorSpace;
-        this.sourceLoaded(source, file);
-      });
-    }
-  }
-
-  private loadStage(stageSources: typeof sources) {
-    for (const source of stageSources) {
-      this.loadSource(source);
+    for (const source of sources) {
+      if (source.type === "gltfModel") {
+        this.loaders.gltfLoader.load(source.path, (file) => {
+          this.sourceLoaded(source, file);
+        });
+      } else if (source.type === "texture") {
+        this.loaders.textureLoader.load(source.path, (file: Texture) => {
+          file.colorSpace = SRGBColorSpace;
+          this.sourceLoaded(source, file);
+        });
+      }
     }
   }
 
   sourceLoaded(source: { name: string; type: string; path: string }, file: ResourceType) {
     this.items[source.name] = file;
+
     this.loaded++;
 
-    const progress = Math.min(this.loaded / this.toLoad, 1);
-    this.emit("progress", progress);
+    this.emit("progress", this.loaded / this.toLoad);
 
-    // Stage 1 complete — show the site
-    if (this.loaded === this.stage1Sources.length && !this.isReady) {
+    if (this.loaded === this.toLoad) {
       this.isReady = true;
       this.emit("ready");
-      this.log("Stage 1 loaded — site visible");
-
-      // Start loading stage 2 after a short delay
-      setTimeout(() => {
-        this.log("Loading stage 2...");
-        this.loadStage(this.stage2Sources);
-      }, 200);
-    }
-
-    // Stage 2 complete — load stage 3
-    if (this.loaded === this.stage1Sources.length + this.stage2Sources.length) {
-      this.log("Stage 2 loaded");
-      setTimeout(() => {
-        this.log("Loading stage 3...");
-        this.loadStage(this.stage3Sources);
-      }, 200);
-    }
-
-    // All done
-    if (this.loaded === sources.length) {
       this.log("All resources loaded");
     }
   }

@@ -23,35 +23,29 @@ type Source = {
   name: string;
   type: "gltfModel" | "texture";
   path: string;
-  stage: 1 | 2 | 3;
 };
 
-// Stage 1: Hero/Room scene (first page the user sees)
-// Stage 2: About section (avatar details, lab)
-// Stage 3: Contact section
 export const sources = [
-  // STAGE 1 — Room/Hero (first page)
-  { name: "room-model", type: "gltfModel", path: roomModel, stage: 1 },
-  { name: "room-texture", type: "texture", path: roomTexture, stage: 1 },
-  { name: "room-shadow-texture", type: "texture", path: roomShadowTexture, stage: 1 },
-  { name: "desktops-texture", type: "texture", path: desktopsTexture, stage: 1 },
-  { name: "diffuse-map", type: "texture", path: diffuseMap, stage: 1 },
-  { name: "matcap-black", type: "texture", path: matcapBlack, stage: 1 },
-  { name: "matcap-gray", type: "texture", path: matcapGray, stage: 1 },
-  { name: "matcap-white", type: "texture", path: matcapWhite, stage: 1 },
-  { name: "numbers-bitmap", type: "texture", path: numbersBitmap, stage: 1 },
+  // Models
+  { name: "avatar-model", type: "gltfModel", path: avatarModel },
+  { name: "lab-model", type: "gltfModel", path: labModel },
+  { name: "room-model", type: "gltfModel", path: roomModel },
+  { name: "contact-model", type: "gltfModel", path: contactModel },
 
-  // STAGE 2 — About section (avatar, lab, hologram)
-  { name: "avatar-model", type: "gltfModel", path: avatarModel, stage: 2 },
-  { name: "lab-model", type: "gltfModel", path: labModel, stage: 2 },
-  { name: "head-texture", type: "texture", path: headTexture, stage: 2 },
-  { name: "face-texture", type: "texture", path: faceTexture, stage: 2 },
-  { name: "matcap-skin", type: "texture", path: matcapSkin, stage: 2 },
-  { name: "hologram-plane-texture", type: "texture", path: hologramPlaneTexture, stage: 2 },
-  { name: "icon-spritesheet", type: "texture", path: iconSpritesheet, stage: 2 },
-
-  // STAGE 3 — Contact section
-  { name: "contact-model", type: "gltfModel", path: contactModel, stage: 3 },
-  { name: "contact-texture", type: "texture", path: contactTexture, stage: 3 },
-  { name: "contact-shadow-texture", type: "texture", path: contactShadowTexture, stage: 3 },
+  // Textures
+  { name: "contact-texture", type: "texture", path: contactTexture },
+  { name: "contact-shadow-texture", type: "texture", path: contactShadowTexture },
+  { name: "desktops-texture", type: "texture", path: desktopsTexture },
+  { name: "diffuse-map", type: "texture", path: diffuseMap },
+  { name: "face-texture", type: "texture", path: faceTexture },
+  { name: "head-texture", type: "texture", path: headTexture },
+  { name: "hologram-plane-texture", type: "texture", path: hologramPlaneTexture },
+  { name: "icon-spritesheet", type: "texture", path: iconSpritesheet },
+  { name: "matcap-black", type: "texture", path: matcapBlack },
+  { name: "matcap-gray", type: "texture", path: matcapGray },
+  { name: "matcap-skin", type: "texture", path: matcapSkin },
+  { name: "matcap-white", type: "texture", path: matcapWhite },
+  { name: "numbers-bitmap", type: "texture", path: numbersBitmap },
+  { name: "room-texture", type: "texture", path: roomTexture },
+  { name: "room-shadow-texture", type: "texture", path: roomShadowTexture },
 ] as const satisfies Source[];
