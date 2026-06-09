@@ -1,0 +1,16 @@
+name = "portfolio-api"
+main = "src/index.ts"
+compatibility_date = "2024-12-01"
+
+[vars]
+ADMIN_USERNAME = "ritesh"
+CLOUDINARY_CLOUD_NAME = "ddxsjvqad"
+# Set ADMIN_PASSWORD, JWT_SECRET, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET via `wrangler secret put`
+
+[[d1_databases]]
+binding = "DB"
+database_name = "portfolio-db"
+database_id = "6a49e244-8128-45bc-a614-5b2f6be884ae"
+
+[dev]
+port = 8787
