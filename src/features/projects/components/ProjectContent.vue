@@ -183,10 +183,10 @@ onMounted(() => {
             <div class="project-section-code-wrapper">
               <span class="project-section-code-label">Code:</span>
               <pre class="project-section-code-block"><code v-html="highlightCode(cell.code)"></code></pre>
-              <div v-if="cell.output" class="project-section-code-output">
-                <span class="project-section-code-output-label">Output:</span>
-                <pre class="project-section-code-output-content">{{ cell.output }}</pre>
-              </div>
+            </div>
+            <div v-if="cell.output" class="project-section-code-output-wrapper">
+              <span class="project-section-code-output-label">Output:</span>
+              <pre class="project-section-code-output-content">{{ cell.output }}</pre>
             </div>
           </div>
         </div>
@@ -448,30 +448,32 @@ onMounted(() => {
       }
     }
 
-    &-output {
+    &-output-wrapper {
       background: #1a1a1a;
-      border-top: 1px solid #333;
+      border: 1px solid #333;
+      border-radius: 8px;
       padding: 12px 20px;
+      margin-top: 6px;
+    }
 
-      &-label {
-        font-size: 0.7rem;
-        font-weight: 700;
-        color: #888;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        display: block;
-        margin-bottom: 6px;
-      }
+    &-output-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      display: block;
+      margin-bottom: 6px;
+    }
 
-      &-content {
-        font-family: "Consolas", "Monaco", "Courier New", monospace;
-        font-size: 0.75rem;
-        color: #aaffaa;
-        line-height: 1.5;
-        white-space: pre;
-        margin: 0;
-        overflow-x: auto;
-      }
+    &-output-content {
+      font-family: "Consolas", "Monaco", "Courier New", monospace;
+      font-size: 0.75rem;
+      color: #aaffaa;
+      line-height: 1.5;
+      white-space: pre;
+      margin: 0;
+      overflow-x: auto;
     }
   }
 }
