@@ -23,30 +23,35 @@ type Source = {
   name: string;
   type: "gltfModel" | "texture";
   path: string;
-  priority?: "high" | "low";
+  stage: 1 | 2 | 3;
 };
 
+// Stage 1: Hero/Room scene (first page the user sees)
+// Stage 2: About section (avatar details, lab)
+// Stage 3: Contact section
 export const sources = [
-  // HIGH PRIORITY — needed for initial scene
-  { name: "room-model", type: "gltfModel", path: roomModel, priority: "high" },
-  { name: "avatar-model", type: "gltfModel", path: avatarModel, priority: "high" },
-  { name: "room-texture", type: "texture", path: roomTexture, priority: "high" },
-  { name: "room-shadow-texture", type: "texture", path: roomShadowTexture, priority: "high" },
-  { name: "desktops-texture", type: "texture", path: desktopsTexture, priority: "high" },
-  { name: "diffuse-map", type: "texture", path: diffuseMap, priority: "high" },
-  { name: "head-texture", type: "texture", path: headTexture, priority: "high" },
-  { name: "face-texture", type: "texture", path: faceTexture, priority: "high" },
-  { name: "matcap-black", type: "texture", path: matcapBlack, priority: "high" },
-  { name: "matcap-gray", type: "texture", path: matcapGray, priority: "high" },
-  { name: "matcap-skin", type: "texture", path: matcapSkin, priority: "high" },
-  { name: "matcap-white", type: "texture", path: matcapWhite, priority: "high" },
+  // STAGE 1 — Room/Hero (first page)
+  { name: "room-model", type: "gltfModel", path: roomModel, stage: 1 },
+  { name: "room-texture", type: "texture", path: roomTexture, stage: 1 },
+  { name: "room-shadow-texture", type: "texture", path: roomShadowTexture, stage: 1 },
+  { name: "desktops-texture", type: "texture", path: desktopsTexture, stage: 1 },
+  { name: "diffuse-map", type: "texture", path: diffuseMap, stage: 1 },
+  { name: "matcap-black", type: "texture", path: matcapBlack, stage: 1 },
+  { name: "matcap-gray", type: "texture", path: matcapGray, stage: 1 },
+  { name: "matcap-white", type: "texture", path: matcapWhite, stage: 1 },
+  { name: "numbers-bitmap", type: "texture", path: numbersBitmap, stage: 1 },
 
-  // LOW PRIORITY — loaded after site is visible
-  { name: "lab-model", type: "gltfModel", path: labModel, priority: "low" },
-  { name: "contact-model", type: "gltfModel", path: contactModel, priority: "low" },
-  { name: "contact-texture", type: "texture", path: contactTexture, priority: "low" },
-  { name: "contact-shadow-texture", type: "texture", path: contactShadowTexture, priority: "low" },
-  { name: "hologram-plane-texture", type: "texture", path: hologramPlaneTexture, priority: "low" },
-  { name: "icon-spritesheet", type: "texture", path: iconSpritesheet, priority: "low" },
-  { name: "numbers-bitmap", type: "texture", path: numbersBitmap, priority: "low" },
+  // STAGE 2 — About section (avatar, lab, hologram)
+  { name: "avatar-model", type: "gltfModel", path: avatarModel, stage: 2 },
+  { name: "lab-model", type: "gltfModel", path: labModel, stage: 2 },
+  { name: "head-texture", type: "texture", path: headTexture, stage: 2 },
+  { name: "face-texture", type: "texture", path: faceTexture, stage: 2 },
+  { name: "matcap-skin", type: "texture", path: matcapSkin, stage: 2 },
+  { name: "hologram-plane-texture", type: "texture", path: hologramPlaneTexture, stage: 2 },
+  { name: "icon-spritesheet", type: "texture", path: iconSpritesheet, stage: 2 },
+
+  // STAGE 3 — Contact section
+  { name: "contact-model", type: "gltfModel", path: contactModel, stage: 3 },
+  { name: "contact-texture", type: "texture", path: contactTexture, stage: 3 },
+  { name: "contact-shadow-texture", type: "texture", path: contactShadowTexture, stage: 3 },
 ] as const satisfies Source[];
