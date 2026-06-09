@@ -30,12 +30,8 @@ export const useHowler = () => {
       return;
     }
 
-    // Enable sounds unless user previously turned them off
-    const stored = localStorage.getItem("portfolio-soundsEnabled");
-    soundsEnabled.value = stored !== "false";
-    if (stored === null) {
-      localStorage.setItem("portfolio-soundsEnabled", "true");
-    }
+    // Always enable sounds on every visit
+    soundsEnabled.value = true;
   };
 
   const tick = () => {
@@ -69,7 +65,6 @@ export const useHowler = () => {
   watch(soundsEnabled, (newVal) => {
     if (!isFeatureEnabled("sounds") || isTouch.value) return;
     enabledVolume.value = newVal ? 1 : 0;
-    localStorage.setItem("portfolio-soundsEnabled", newVal.toString());
   });
 
   const loadAllSounds = () => {
@@ -86,7 +81,7 @@ export const useHowler = () => {
     Howler.volume(0);
 
     if (howlerUnlocked.value) {
-      soundsEnabled.value = localStorage.getItem("portfolio-soundsEnabled") !== "false";
+      soundsEnabled.value = true;
     }
 
     gsap.ticker.add(tick);
