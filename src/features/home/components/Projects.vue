@@ -8,6 +8,8 @@ import { isFeatureEnabled } from "../../../utils/features";
 
 import type { ProjectPreview } from "../../../content/types";
 
+const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:8787";
+
 const loadedPreviews = ref<ProjectPreview[] | null>(null);
 const typewriterText = ref("");
 const showCursor = ref(true);
@@ -24,8 +26,31 @@ const loadPreviews = async () => {
   const func = previews[locale.value as keyof typeof previews];
   if (!func) return;
   const module = await func();
-  loadedPreviews.value = module.default;
-  emit("loaded", module.default);
+  const staticPreviews: ProjectPreview[] = [...module.default];
+
+  // Fetch projects from API and merge
+  try {
+    const res = await fetch(`${API_BASE}/api/projects`);
+    if (res.ok) {
+      const apiProjects: any[] = await res.json();
+      for (const proj of apiProjects) {
+        const exists = staticPreviews.some(sp => sp.slug === proj.slug);
+        if (!exists) {
+          staticPreviews.push({
+            title: proj.title,
+            slug: proj.slug,
+            thumbnail: proj.poster_url || "",
+            description: proj.description ? proj.description.slice(0, 80) : "",
+          });
+        }
+      }
+    }
+  } catch {
+    // API unavailable, just use static previews
+  }
+
+  loadedPreviews.value = staticPreviews;
+  emit("loaded", staticPreviews);
 };
 
 const typeText = () => {

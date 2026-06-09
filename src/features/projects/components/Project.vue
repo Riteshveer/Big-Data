@@ -10,20 +10,52 @@ import { lenis } from "../../../composables/useScroll";
 
 import type { Locale } from "../../../i18n/types";
 
+const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:8787";
+
 const loading = ref(true);
 const content = ref(null);
 const error = ref<Error | null>(null);
 
 const fetchProject = async (project: string | undefined) => {
+  if (!project) return;
+  loading.value = true;
+  content.value = null;
+
+  // Try static content first
   try {
-    const module = await projectModules[locale.value as Locale][project as string].default;
-    content.value = module;
-    loading.value = false;
+    const localeModules = projectModules[locale.value as Locale];
+    if (localeModules && localeModules[project]) {
+      const module = await localeModules[project].default;
+      content.value = module;
+      loading.value = false;
+      return;
+    }
+  } catch {
+    // Static module not found, try API
+  }
+
+  // Fallback: fetch from API
+  try {
+    const res = await fetch(`${API_BASE}/api/projects/${project}`);
+    if (res.ok) {
+      const data = await res.json();
+      content.value = {
+        title: data.title,
+        theme: data.theme || "light",
+        tags: data.tags || [],
+        description: data.description || "",
+        source: data.source_url || undefined,
+        live: data.live_url || undefined,
+        components: [],
+      } as any;
+    } else {
+      error.value = new Error(`Project not found: ${project}`);
+    }
   } catch (err) {
     error.value = new Error(`Failed to fetch project ${project}`);
-  } finally {
-    loading.value = false;
   }
+
+  loading.value = false;
 };
 
 watch(
