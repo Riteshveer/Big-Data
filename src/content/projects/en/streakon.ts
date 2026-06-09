@@ -7,7 +7,7 @@ export default {
   videoBorder: false,
   source: "https://github.com/Riteshveer",
   description:
-    "Modern enterprises generate millions of customer interactions daily across websites, mobile apps, CRM systems, and transaction platforms. Traditional analytics struggle with real-time processing, resulting in delayed reporting and missed opportunities.<br/><br/>This platform implements a scalable end-to-end big data and AI ecosystem capable of ingesting, processing, analyzing, and predicting customer behavior in real time.",
+    "Modern enterprises generate millions of customer interactions daily across websites, mobile apps, CRM systems, and transaction platforms. Traditional analytics struggle with real-time processing, resulting in delayed reporting and missed opportunities.\n\nThis platform implements a scalable end-to-end big data and AI ecosystem capable of ingesting, processing, analyzing, and predicting customer behavior in real time.",
   components: [
     {
       type: "architectureDiagram",

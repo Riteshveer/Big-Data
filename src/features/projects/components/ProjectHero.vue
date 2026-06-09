@@ -32,7 +32,7 @@ watch(projectId, () => {
         <Tag v-for="tag in content.tags" :key="tag" :variant="tag" />
       </div>
     </div>
-    <p class="project-hero-description" v-html="content.description"></p>
+    <p class="project-hero-description">{{ content.description }}</p>
     <div class="project-hero-buttons">
       <Link v-if="content.live" :href="content.live" external class="project-hero-button" data-cursor="arrow-external">
         <Button renderAs="div" variant="accent" class="children-unclickable" data-hoversound="hover">{{
@@ -143,6 +143,7 @@ watch(projectId, () => {
   &-description {
     color: var(--color-text-400);
     line-height: var(--line-height-copy);
+    white-space: pre-line;
     grid-column: 1 / 13;
     align-self: center;
 

@@ -296,7 +296,7 @@ onMounted(load);
       <div class="form-grid">
         <div class="field"><label>Title</label><input v-model="newProject.title" class="field-input" /></div>
         <div class="field"><label>Slug</label><input v-model="newProject.slug" class="field-input" placeholder="auto-generated if empty" /></div>
-        <div class="field full"><label>Description (HTML)</label><textarea v-model="newProject.description" class="field-input" rows="4"></textarea></div>
+        <div class="field full"><label>Description</label><textarea v-model="newProject.description" class="field-input" rows="4" placeholder="Write your project description here in plain text..."></textarea></div>
         <div class="field"><label>Tags (comma separated)</label><input v-model="tagsInput" class="field-input" placeholder="pyspark, kafka" /></div>
         <div class="field"><label>Theme</label><select v-model="newProject.theme" class="field-input"><option value="light">Light</option><option value="dark">Dark</option></select></div>
         <div class="field"><label>Live URL</label><input v-model="newProject.live_url" class="field-input" /></div>
@@ -320,7 +320,7 @@ onMounted(load);
       <div class="form-grid">
         <div class="field"><label>Title</label><input v-model="editing.title" class="field-input" /></div>
         <div class="field"><label>Slug</label><input v-model="editing.slug" class="field-input" /></div>
-        <div class="field full"><label>Description (HTML)</label><textarea v-model="editing.description" class="field-input" rows="4"></textarea></div>
+        <div class="field full"><label>Description</label><textarea v-model="editing.description" class="field-input" rows="4" placeholder="Write your project description here in plain text..."></textarea></div>
         <div class="field"><label>Tags (comma separated)</label><input v-model="tagsInput" class="field-input" /></div>
         <div class="field"><label>Theme</label><select v-model="editing.theme" class="field-input"><option value="light">Light</option><option value="dark">Dark</option></select></div>
         <div class="field"><label>Live URL</label><input v-model="editing.live_url" class="field-input" /></div>
