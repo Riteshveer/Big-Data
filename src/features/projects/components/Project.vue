@@ -21,20 +21,7 @@ const fetchProject = async (project: string | undefined) => {
   loading.value = true;
   content.value = null;
 
-  // Try static content first
-  try {
-    const localeModules = projectModules[locale.value as Locale];
-    if (localeModules && localeModules[project]) {
-      const module = await localeModules[project].default;
-      content.value = module;
-      loading.value = false;
-      return;
-    }
-  } catch {
-    // Static module not found, try API
-  }
-
-  // Fallback: fetch from API
+  // Always fetch from API — admin has full control
   try {
     const res = await fetch(`${API_BASE}/api/projects/${project}`);
     if (res.ok) {
@@ -49,13 +36,27 @@ const fetchProject = async (project: string | undefined) => {
         poster_url: data.poster_url || undefined,
         components: [],
       } as any;
-    } else {
-      error.value = new Error(`Project not found: ${project}`);
+      loading.value = false;
+      return;
     }
-  } catch (err) {
-    error.value = new Error(`Failed to fetch project ${project}`);
+  } catch {
+    // API failed
   }
 
+  // Fallback to static content if API doesn't have it
+  try {
+    const localeModules = projectModules[locale.value as Locale];
+    if (localeModules && localeModules[project]) {
+      const module = await localeModules[project].default;
+      content.value = module;
+      loading.value = false;
+      return;
+    }
+  } catch {
+    // Static not found either
+  }
+
+  error.value = new Error(`Project not found: ${project}`);
   loading.value = false;
 };
 

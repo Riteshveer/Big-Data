@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref, watch, onMounted } from "vue";
-import { previews } from "../../../content/projects/previews";
 import { locale } from "../../../i18n/store";
 import PreviewCard from "../../projects/components/PreviewCard.vue";
 import NotchSection from "../../../components/NotchSection.vue";
@@ -22,35 +21,24 @@ const emit = defineEmits<{
 }>();
 
 const loadPreviews = async () => {
-  if (!locale.value) return;
-  const func = previews[locale.value as keyof typeof previews];
-  if (!func) return;
-  const module = await func();
-  const staticPreviews: ProjectPreview[] = [...module.default];
-
-  // Fetch projects from API and merge
+  // Load all projects from API only — admin has full control
   try {
     const res = await fetch(`${API_BASE}/api/projects`);
     if (res.ok) {
       const apiProjects: any[] = await res.json();
-      for (const proj of apiProjects) {
-        const exists = staticPreviews.some(sp => sp.slug === proj.slug);
-        if (!exists) {
-          staticPreviews.push({
-            title: proj.title,
-            slug: proj.slug,
-            thumbnail: proj.poster_url || "",
-            description: proj.description ? proj.description.slice(0, 80) : "",
-          });
-        }
-      }
+      const allPreviews: ProjectPreview[] = apiProjects.map(proj => ({
+        title: proj.title,
+        slug: proj.slug,
+        thumbnail: proj.poster_url || "",
+        description: proj.description ? proj.description.slice(0, 80) : "",
+      }));
+      loadedPreviews.value = allPreviews;
+      emit("loaded", allPreviews);
     }
   } catch {
-    // API unavailable, just use static previews
+    // API unavailable, show nothing
+    loadedPreviews.value = [];
   }
-
-  loadedPreviews.value = staticPreviews;
-  emit("loaded", staticPreviews);
 };
 
 const typeText = () => {
