@@ -503,14 +503,6 @@ onMounted(load);
                 <div class="add-desc-form">
                   <h6>Add Code Cell</h6>
                   <input v-model="newCodeTitle" class="field-input" placeholder="Cell title (optional, e.g. 'Parquet File Read')" />
-                  <select v-model="newCodeLanguage" class="field-input" style="max-width:200px">
-                    <option value="python">Python</option>
-                    <option value="sql">SQL</option>
-                    <option value="scala">Scala</option>
-                    <option value="bash">Bash</option>
-                    <option value="java">Java</option>
-                    <option value="javascript">JavaScript</option>
-                  </select>
                   <textarea v-model="newCodeContent" class="field-input field-code" rows="6" placeholder="Paste your code here..."></textarea>
                   <textarea v-model="newCodeOutput" class="field-input" rows="2" placeholder="Output (optional, e.g. 'Total rows: 1,234,567')"></textarea>
                   <button class="btn-primary btn-sm-primary" @click="addCodeCell(section.id)">+ Add Code Cell</button>
