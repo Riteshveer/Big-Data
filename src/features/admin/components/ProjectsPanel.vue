@@ -287,7 +287,7 @@ onMounted(load);
   <div class="projects-panel">
     <div class="panel-header">
       <button v-if="viewMode === 'list'" class="btn-primary" @click="startCreate">+ New Project</button>
-      <button v-else class="btn-secondary" @click="goToList">← Back to Projects</button>
+      <button v-else-if="viewMode !== 'diagram'" class="btn-secondary" @click="goToList">← Back to Projects</button>
       <p v-if="message" :class="['msg', message.startsWith('Error') && 'msg-error']">{{ message }}</p>
     </div>
 
