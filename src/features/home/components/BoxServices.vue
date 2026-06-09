@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, watchEffect, onBeforeUnmount, onMounted } from "vue";
 import gsap from "gsap";
-import { locale } from "../../../i18n/store";
 import { t } from "../../../i18n/utils/translate";
 import AppearingText from "../../../components/AppearingText.vue";
 import { BREAKPOINTS } from "../../../utils/sizes";

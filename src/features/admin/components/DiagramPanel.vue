@@ -152,7 +152,7 @@ const maxCol = computed(() => Math.max(...nodes.value.map(n => n.col), 1));
 const maxRow = computed(() => Math.max(...nodes.value.map(n => n.row), 1));
 
 const getPreviewLeft = (node: DiagramNode) => 8 + (node.col / maxCol.value) * 84;
-const getPreviewTop = (node: DiagramNode, idx: number) => 8 + (node.row / maxRow.value) * 84;
+const getPreviewTop = (node: DiagramNode, _idx: number) => 8 + (node.row / maxRow.value) * 84;
 
 const showMsg = (msg: string) => { message.value = msg; setTimeout(() => (message.value = ""), 4000); };
 

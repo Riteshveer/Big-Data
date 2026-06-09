@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, nextTick, watch, computed } from "vue";
+import { ref, onMounted, onUnmounted, nextTick, computed } from "vue";
 import { recentProjectId } from "../../../composables/useRouteObserver";
 
 const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:8787";
@@ -59,7 +59,7 @@ const maxRow = computed(() => {
   return Math.max(...diagramData.value.nodes.map(n => n.row), 1);
 });
 
-const getNodeLeft = (node: DiagramNode, index: number) => {
+const getNodeLeft = (node: DiagramNode, _index: number) => {
   if (isMobile.value) return 50;
   return 8 + (node.col / maxCol.value) * 84;
 };
