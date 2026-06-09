@@ -19,6 +19,11 @@ const handleLogout = () => {
   logout();
   window.location.reload();
 };
+
+const goHome = () => {
+  window.history.pushState(null, "", "/");
+  window.dispatchEvent(new PopStateEvent("popstate"));
+};
 </script>
 
 <template>
@@ -39,6 +44,7 @@ const handleLogout = () => {
           <span>{{ tab.label }}</span>
         </button>
       </nav>
+      <button class="sidebar-home" @click="goHome">← Back to Site</button>
       <button class="sidebar-logout" @click="handleLogout">Logout</button>
     </aside>
 
@@ -130,6 +136,22 @@ const handleLogout = () => {
 
 .sidebar-nav-icon {
   font-size: 1.1rem;
+}
+
+.sidebar-home {
+  margin: 16px 12px 0;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #2e3250;
+  background: transparent;
+  color: #60a5fa;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.sidebar-home:hover {
+  background: rgba(96, 165, 250, 0.1);
 }
 
 .sidebar-logout {
