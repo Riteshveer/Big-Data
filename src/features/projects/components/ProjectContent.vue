@@ -5,9 +5,7 @@ import ProjectComponent from "./ProjectComponent.vue";
 import ArchitectureDiagram from "./ArchitectureDiagram.vue";
 import Link from "../../../components/Link.vue";
 import NextProject from "./NextProject.vue";
-import { locale } from "../../../i18n/store";
-import { previews } from "../../../content/projects/previews";
-import { ref, computed, watch, onMounted } from "vue";
+import { ref, computed, onMounted } from "vue";
 
 import type { ProjectContent, ProjectPreview } from "../../../content/types";
 
@@ -49,8 +47,20 @@ const hasStaticDiagram = computed(() =>
 );
 
 const loadPreviews = async () => {
-  const module = await previews[locale.value as keyof typeof previews]();
-  loadedPreviews.value = module.default;
+  try {
+    const res = await fetch(`${API_BASE}/api/projects`);
+    if (res.ok) {
+      const apiProjects: any[] = await res.json();
+      loadedPreviews.value = apiProjects.map((p: any) => ({
+        title: p.title,
+        slug: p.slug,
+        thumbnail: p.poster_url || "",
+        description: p.description ? p.description.slice(0, 80) : "",
+      }));
+    }
+  } catch {
+    loadedPreviews.value = [];
+  }
 };
 
 const loadSections = async () => {
@@ -88,8 +98,6 @@ const nextProject = computed(() => {
 
   return previews[nextIndex];
 });
-
-watch(locale, loadPreviews);
 
 onMounted(() => {
   loadPreviews();
