@@ -238,7 +238,7 @@ onMounted(() => {
     border-radius: var(--radius-lg);
     overflow: hidden;
     background-color: var(--color-background-300);
-    aspect-ratio: 16 / 9;
+    aspect-ratio: 24 / 9;
   }
 
   &-image {
