@@ -109,11 +109,6 @@ onMounted(() => {
   <Layout class="project-content">
     <ProjectHero :content="content" :projectId="projectId" />
 
-    <!-- Project banner/poster image -->
-    <div v-if="(content as any).poster_url" class="project-content-banner">
-      <img :src="resolveUrl((content as any).poster_url)" :alt="content.title" class="project-content-banner-img" />
-    </div>
-
     <div class="project-content-components" v-if="(content.components && content.components.length) || sections.length || hasDiagram">
       <!-- Dynamic diagram from API (only if not already in static components) -->
       <div v-if="hasDiagram && !hasStaticDiagram" class="grid project-content-grid">
