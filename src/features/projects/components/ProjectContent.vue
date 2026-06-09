@@ -180,7 +180,10 @@ onMounted(() => {
             class="project-section-code"
           >
             <p v-if="cell.title" class="project-section-code-title">{{ cell.title }}</p>
-            <pre class="project-section-code-block"><code v-html="highlightCode(cell.code)"></code></pre>
+            <div class="project-section-code-wrapper">
+              <span class="project-section-code-label">Code:</span>
+              <pre class="project-section-code-block"><code v-html="highlightCode(cell.code)"></code></pre>
+            </div>
             <div v-if="cell.output" class="project-section-code-output">
               <span class="project-section-code-output-label">Output:</span>
               <pre class="project-section-code-output-content">{{ cell.output }}</pre>
@@ -385,10 +388,26 @@ onMounted(() => {
       }
     }
 
+    &-wrapper {
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    &-label {
+      display: block;
+      background: #313244;
+      color: #a6adc8;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 8px 20px;
+    }
+
     &-block {
       background: #1e1e2e;
       color: #cdd6f4;
-      border-radius: 8px;
+      border-radius: 0 0 8px 8px;
       padding: 16px 20px;
       font-family: "Consolas", "Monaco", "Courier New", monospace;
       font-size: 0.8rem;

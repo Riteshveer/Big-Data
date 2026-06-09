@@ -80,6 +80,12 @@ const newCodeContent = ref("");
 const newCodeLanguage = ref("python");
 const newCodeOutput = ref("");
 
+// Editing code cell
+const editingCodeId = ref<number | null>(null);
+const editCodeTitle = ref("");
+const editCodeContent = ref("");
+const editCodeOutput = ref("");
+
 const load = async () => {
   loading.value = true;
   try { projects.value = await api("/api/admin/projects/all"); }
@@ -319,6 +325,27 @@ const deleteCodeCell = async (sectionId: number, cellId: number) => {
   } catch (e: any) { showMsg(`Error: ${e.message}`); }
 };
 
+const startEditCode = (cell: SectionCodeCell) => {
+  editingCodeId.value = cell.id;
+  editCodeTitle.value = cell.title || "";
+  editCodeContent.value = cell.code;
+  editCodeOutput.value = cell.output || "";
+};
+
+const cancelEditCode = () => { editingCodeId.value = null; };
+
+const saveEditCode = async (sectionId: number, cellId: number) => {
+  if (!currentProjectId.value) return;
+  try {
+    await api(`/api/admin/projects/${currentProjectId.value}/images/${sectionId}/code-cells/${cellId}`, {
+      method: "PUT", body: JSON.stringify({ title: editCodeTitle.value.trim() || null, code: editCodeContent.value, output: editCodeOutput.value.trim() || null }),
+    });
+    editingCodeId.value = null;
+    showMsg("Code cell updated!");
+    await loadSections(currentProjectId.value);
+  } catch (e: any) { showMsg(`Error: ${e.message}`); }
+};
+
 const toggleSection = (id: number) => {
   expandedSection.value = expandedSection.value === id ? null : id;
   newDescTitle.value = "";
@@ -488,13 +515,30 @@ onMounted(load);
                 <h5>💻 Code Cells</h5>
                 <div class="desc-list" v-if="(section as any).codeCells?.length">
                   <div v-for="cell in (section as any).codeCells" :key="cell.id" class="desc-item">
-                    <div class="desc-content">
-                      <p class="desc-title" v-if="cell.title"><strong>{{ cell.title }}</strong> <span style="color:#6b7394">({{ cell.language }})</span></p>
-                      <p class="desc-text">{{ cell.code.slice(0, 80) }}{{ cell.code.length > 80 ? '...' : '' }}</p>
-                    </div>
-                    <div class="desc-actions">
-                      <button class="btn-xs btn-danger-xs" @click="deleteCodeCell(section.id, cell.id)">✕</button>
-                    </div>
+                    <!-- View mode -->
+                    <template v-if="editingCodeId !== cell.id">
+                      <div class="desc-content">
+                        <p class="desc-title" v-if="cell.title"><strong>{{ cell.title }}</strong></p>
+                        <p class="desc-text">{{ cell.code.slice(0, 80) }}{{ cell.code.length > 80 ? '...' : '' }}</p>
+                        <p class="desc-text" v-if="cell.output" style="color:#34d399">↳ {{ cell.output.slice(0, 50) }}</p>
+                      </div>
+                      <div class="desc-actions">
+                        <button class="btn-xs btn-edit-xs" @click="startEditCode(cell)">✏️</button>
+                        <button class="btn-xs btn-danger-xs" @click="deleteCodeCell(section.id, cell.id)">✕</button>
+                      </div>
+                    </template>
+                    <!-- Edit mode -->
+                    <template v-else>
+                      <div class="desc-edit-form">
+                        <input v-model="editCodeTitle" class="field-input" placeholder="Cell title (optional)" />
+                        <textarea v-model="editCodeContent" class="field-input field-code" rows="6" placeholder="Code"></textarea>
+                        <textarea v-model="editCodeOutput" class="field-input" rows="2" placeholder="Output (optional)"></textarea>
+                        <div class="desc-edit-actions">
+                          <button class="btn-xs btn-save-xs" @click="saveEditCode(section.id, cell.id)">Save</button>
+                          <button class="btn-xs" @click="cancelEditCode">Cancel</button>
+                        </div>
+                      </div>
+                    </template>
                   </div>
                 </div>
                 <p v-else class="empty">No code cells yet.</p>
