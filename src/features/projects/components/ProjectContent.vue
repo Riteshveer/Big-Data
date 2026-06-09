@@ -134,11 +134,11 @@ onMounted(() => {
         :key="`section-${section.id}`"
         class="project-section"
       >
+        <h3 v-if="section.alt" class="project-section-heading">{{ section.alt }}</h3>
         <div class="project-section-image-wrapper">
           <img :src="resolveUrl(section.url)" :alt="section.alt || ''" loading="lazy" class="project-section-image" />
         </div>
         <div class="project-section-body">
-          <h3 v-if="section.alt" class="project-section-heading">{{ section.alt }}</h3>
           <div
             v-for="desc in section.descriptions"
             :key="desc.id"
