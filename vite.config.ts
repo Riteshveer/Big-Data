@@ -38,6 +38,10 @@ export default defineConfig({
         assetFileNames: "assets/[hash].[ext]",
         entryFileNames: "chunks/[name]-[hash].js",
         chunkFileNames: "chunks/[hash].js",
+        manualChunks: {
+          three: ["three"],
+          gsap: ["gsap"],
+        },
       },
     },
   },

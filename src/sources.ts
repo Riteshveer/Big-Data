@@ -23,29 +23,30 @@ type Source = {
   name: string;
   type: "gltfModel" | "texture";
   path: string;
+  priority?: "high" | "low";
 };
 
 export const sources = [
-  //models
-  { name: "avatar-model", type: "gltfModel", path: avatarModel },
-  { name: "lab-model", type: "gltfModel", path: labModel },
-  { name: "room-model", type: "gltfModel", path: roomModel },
-  { name: "contact-model", type: "gltfModel", path: contactModel },
+  // HIGH PRIORITY — needed for initial scene
+  { name: "room-model", type: "gltfModel", path: roomModel, priority: "high" },
+  { name: "avatar-model", type: "gltfModel", path: avatarModel, priority: "high" },
+  { name: "room-texture", type: "texture", path: roomTexture, priority: "high" },
+  { name: "room-shadow-texture", type: "texture", path: roomShadowTexture, priority: "high" },
+  { name: "desktops-texture", type: "texture", path: desktopsTexture, priority: "high" },
+  { name: "diffuse-map", type: "texture", path: diffuseMap, priority: "high" },
+  { name: "head-texture", type: "texture", path: headTexture, priority: "high" },
+  { name: "face-texture", type: "texture", path: faceTexture, priority: "high" },
+  { name: "matcap-black", type: "texture", path: matcapBlack, priority: "high" },
+  { name: "matcap-gray", type: "texture", path: matcapGray, priority: "high" },
+  { name: "matcap-skin", type: "texture", path: matcapSkin, priority: "high" },
+  { name: "matcap-white", type: "texture", path: matcapWhite, priority: "high" },
 
-  //textures
-  { name: "contact-texture", type: "texture", path: contactTexture },
-  { name: "contact-shadow-texture", type: "texture", path: contactShadowTexture },
-  { name: "desktops-texture", type: "texture", path: desktopsTexture },
-  { name: "diffuse-map", type: "texture", path: diffuseMap },
-  { name: "face-texture", type: "texture", path: faceTexture },
-  { name: "head-texture", type: "texture", path: headTexture },
-  { name: "hologram-plane-texture", type: "texture", path: hologramPlaneTexture },
-  { name: "icon-spritesheet", type: "texture", path: iconSpritesheet },
-  { name: "matcap-black", type: "texture", path: matcapBlack },
-  { name: "matcap-gray", type: "texture", path: matcapGray },
-  { name: "matcap-skin", type: "texture", path: matcapSkin },
-  { name: "matcap-white", type: "texture", path: matcapWhite },
-  { name: "numbers-bitmap", type: "texture", path: numbersBitmap },
-  { name: "room-texture", type: "texture", path: roomTexture },
-  { name: "room-shadow-texture", type: "texture", path: roomShadowTexture },
+  // LOW PRIORITY — loaded after site is visible
+  { name: "lab-model", type: "gltfModel", path: labModel, priority: "low" },
+  { name: "contact-model", type: "gltfModel", path: contactModel, priority: "low" },
+  { name: "contact-texture", type: "texture", path: contactTexture, priority: "low" },
+  { name: "contact-shadow-texture", type: "texture", path: contactShadowTexture, priority: "low" },
+  { name: "hologram-plane-texture", type: "texture", path: hologramPlaneTexture, priority: "low" },
+  { name: "icon-spritesheet", type: "texture", path: iconSpritesheet, priority: "low" },
+  { name: "numbers-bitmap", type: "texture", path: numbersBitmap, priority: "low" },
 ] as const satisfies Source[];

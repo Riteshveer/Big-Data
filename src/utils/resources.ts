@@ -15,7 +15,9 @@ class Resources extends EventEmitter<{
   ready: void;
   progress: number;
 }> {
-  toLoad = sources.length;
+  highPrioritySources = sources.filter(s => s.priority === "high");
+  lowPrioritySources = sources.filter(s => s.priority === "low");
+  toLoad = this.highPrioritySources.length;
   isReady = false;
   loaded = 0;
   items: Record<string, any> = {};
@@ -39,17 +41,28 @@ class Resources extends EventEmitter<{
   startLoading() {
     if (this.isReady) return;
 
-    for (const source of sources) {
-      if (source.type === "gltfModel") {
-        this.loaders.gltfLoader.load(source.path, (file) => {
-          this.sourceLoaded(source, file);
-        });
-      } else if (source.type === "texture") {
-        this.loaders.textureLoader.load(source.path, (file: Texture) => {
-          file.colorSpace = SRGBColorSpace;
-          this.sourceLoaded(source, file);
-        });
-      }
+    // Load high priority first
+    for (const source of this.highPrioritySources) {
+      this.loadSource(source);
+    }
+  }
+
+  loadLowPriority() {
+    for (const source of this.lowPrioritySources) {
+      this.loadSource(source);
+    }
+  }
+
+  loadSource(source: { name: string; type: string; path: string }) {
+    if (source.type === "gltfModel") {
+      this.loaders.gltfLoader.load(source.path, (file) => {
+        this.sourceLoaded(source, file);
+      });
+    } else if (source.type === "texture") {
+      this.loaders.textureLoader.load(source.path, (file: Texture) => {
+        file.colorSpace = SRGBColorSpace;
+        this.sourceLoaded(source, file);
+      });
     }
   }
 
@@ -58,12 +71,17 @@ class Resources extends EventEmitter<{
 
     this.loaded++;
 
-    this.emit("progress", this.loaded / this.toLoad);
+    // Progress based on high-priority assets only
+    const highProgress = Math.min(this.loaded / this.toLoad, 1);
+    this.emit("progress", highProgress);
 
-    if (this.loaded === this.toLoad) {
+    if (this.loaded === this.toLoad && !this.isReady) {
       this.isReady = true;
       this.emit("ready");
-      this.log("All resources loaded");
+      this.log("High-priority resources loaded — showing site");
+
+      // Start loading low-priority assets in background
+      setTimeout(() => this.loadLowPriority(), 100);
     }
   }
 
