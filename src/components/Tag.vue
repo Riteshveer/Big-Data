@@ -21,6 +21,8 @@ const label = computed(() => tagLabels[props.variant] || props.variant);
   border-radius: var(--radius-md);
   padding: calc(var(--space-xxs) - var(--stroke-md)) calc(var(--space-sm  ) - var(--stroke-md));
   border: var(--stroke-md) solid transparent;
+  color: var(--color-text-400);
+  border-color: var(--color-grayscale-400);
 
   &-copy {
     font-size: var(--font-size-xs);
@@ -218,12 +220,7 @@ const label = computed(() => tagLabels[props.variant] || props.variant);
       color: white;
     }
   }
-
-  // Default style for any unknown tag
-  &:not([class*="tag-variant-three"]):not([class*="tag-variant-react"]):not([class*="tag-variant-websockets"]):not([class*="tag-variant-redis"]):not([class*="tag-variant-javascript"]):not([class*="tag-variant-node"]):not([class*="tag-variant-next"]):not([class*="tag-variant-kubernetes"]):not([class*="tag-variant-postgresql"]):not([class*="tag-variant-pyspark"]):not([class*="tag-variant-kafka"]):not([class*="tag-variant-airflow"]):not([class*="tag-variant-sql"]):not([class*="tag-variant-python"]):not([class*="tag-variant-docker"]):not([class*="tag-variant-azure"]):not([class*="tag-variant-aws"]) {
-    color: var(--color-text-400);
-    border-color: var(--color-grayscale-400);
-  }
+}
   }
 }
 </style>
