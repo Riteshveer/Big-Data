@@ -138,6 +138,20 @@ const deleteProject = async (id: string) => {
   catch (e: any) { showMsg(`Error: ${e.message}`); }
 };
 
+const moveProject = async (idx: number, direction: number) => {
+  const targetIdx = idx + direction;
+  if (targetIdx < 0 || targetIdx >= projects.value.length) return;
+  const current = projects.value[idx]!;
+  const target = projects.value[targetIdx]!;
+  const tempOrder = current.sort_order;
+  try {
+    await api(`/api/admin/projects/${current.id}`, { method: "PUT", body: JSON.stringify({ sort_order: target.sort_order }) });
+    await api(`/api/admin/projects/${target.id}`, { method: "PUT", body: JSON.stringify({ sort_order: tempOrder }) });
+    await load();
+    showMsg("Order updated!");
+  } catch (e: any) { showMsg(`Error: ${e.message}`); }
+};
+
 // --- Poster uploads ---
 const handlePosterUpload = async (e: Event, target: "edit" | "create") => {
   const input = e.target as HTMLInputElement;
@@ -566,7 +580,15 @@ onMounted(load);
     <!-- Projects List -->
     <div v-if="viewMode === 'list' && loading" class="loading">Loading...</div>
     <div v-if="viewMode === 'list' && !loading" class="project-list">
-      <div v-for="project in projects" :key="project.id" class="project-card">
+      <p class="hint">Drag order controls to set which projects appear first on the website (top 5 shown on homepage).</p>
+      <div v-for="(project, idx) in projects" :key="project.id" class="project-card">
+        <div class="project-card-order">
+          <span class="project-card-order-num">{{ idx + 1 }}</span>
+          <div class="project-card-order-btns">
+            <button class="btn-xs" @click="moveProject(idx, -1)" :disabled="idx === 0">↑</button>
+            <button class="btn-xs" @click="moveProject(idx, 1)" :disabled="idx === projects.length - 1">↓</button>
+          </div>
+        </div>
         <div class="project-card-info">
           <h4>{{ project.title }}</h4>
           <div class="project-card-meta">
@@ -574,6 +596,7 @@ onMounted(load);
             <span class="badge badge-blue">{{ project.theme }}</span>
             <span v-if="project.poster_url" class="badge badge-purple">Has Banner</span>
             <span v-for="tag in project.tags.slice(0, 3)" :key="tag" class="badge badge-gray">{{ tag }}</span>
+            <span v-if="idx < 5" class="badge badge-featured">Homepage</span>
           </div>
         </div>
         <div class="project-card-actions">
@@ -683,9 +706,13 @@ onMounted(load);
 /* Project list */
 .project-list { display: flex; flex-direction: column; gap: 12px; }
 .project-card { background: #1a1d2e; border: 1px solid #2e3250; border-radius: 10px; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; }
+.project-card-order { display: flex; flex-direction: column; align-items: center; gap: 4px; margin-right: 14px; }
+.project-card-order-num { font-size: 1.1rem; font-weight: 700; color: #4fa3ff; background: #1e2a4a; border-radius: 6px; min-width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; }
+.project-card-order-btns { display: flex; flex-direction: column; gap: 2px; }
+.project-card-info { flex: 1; }
 .project-card-info h4 { color: #fff; margin-bottom: 6px; }
 .project-card-meta { display: flex; gap: 6px; flex-wrap: wrap; }
-.project-card-actions { display: flex; gap: 8px; }
+.project-card-actions { display: flex; gap: 8px; flex-shrink: 0; }
 
 .badge { font-size: 0.7rem; padding: 2px 8px; border-radius: 4px; font-weight: 500; }
 .badge-green { background: #064e3b; color: #34d399; }
@@ -693,6 +720,7 @@ onMounted(load);
 .badge-blue { background: #1e3a5f; color: #60a5fa; }
 .badge-purple { background: #3b1a5e; color: #c084fc; }
 .badge-gray { background: #1e2235; color: #8892b0; }
+.badge-featured { background: #064e3b; color: #34d399; border: 1px solid #34d399; }
 
 .msg { font-size: 0.85rem; color: #22c55e; }
 .msg-error { color: #ff4d6d; }
