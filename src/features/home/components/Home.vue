@@ -118,7 +118,7 @@ watchEffect(() => {
     !preloaderVisible.value &&
     userHasEntered.value
   ) {
-    animations.init();
+    animations.restart();
   }
 });
 

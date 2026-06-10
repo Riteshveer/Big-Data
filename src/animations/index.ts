@@ -19,6 +19,18 @@ const init = () => {
   isInitialized = true;
 };
 
+const restart = () => {
+  if (isInitialized) {
+    scenes.destroy();
+    waypoints.destroy();
+    isInitialized = false;
+  }
+  scenes.init();
+  waypoints.init();
+  intro.play();
+  isInitialized = true;
+};
+
 const destroy = () => {
   if (!isInitialized) return;
   scenes.destroy();
@@ -26,4 +38,4 @@ const destroy = () => {
   isInitialized = false;
 };
 
-export const animations = { init, destroy };
+export const animations = { init, destroy, restart };
