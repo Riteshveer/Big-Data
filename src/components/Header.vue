@@ -34,13 +34,8 @@ const { isDarkTheme } = useHeaderTheme({
 });
 
 const handleBackClick = () => {
-  // If it's the first route the user visited, navigate to home
-  // Otherwise, go back in browser history
-  if (isFirstRoute.value) {
-    router.push("/");
-  } else {
-    router.back();
-  }
+  // Use browser history back - this goes to wherever user came from
+  window.history.back();
 };
 
 const handleLogoClick = () => {
