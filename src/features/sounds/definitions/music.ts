@@ -11,6 +11,6 @@ export const musicTracks = {
 } as const;
 
 export const BASE_VOLUMES = {
-  luci: 0.2,
-  about: 0.3,
+  luci: 0.1,
+  about: 0.2,
 } as const satisfies Record<MusicTrack, number>;
