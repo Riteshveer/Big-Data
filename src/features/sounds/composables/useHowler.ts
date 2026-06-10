@@ -75,20 +75,32 @@ export const useHowler = () => {
   // Unlock audio context on first user interaction (required by all browsers)
   const setupUnlock = () => {
     const unlockAudio = () => {
-      if (Howler.ctx && Howler.ctx.state !== "running") {
-        Howler.ctx.resume();
+      if (Howler.ctx) {
+        if (Howler.ctx.state !== "running") {
+          Howler.ctx.resume().then(() => {
+            // Force a silent play to fully unlock on iOS
+            Howler.volume(0);
+          });
+        }
       }
-      window.removeEventListener("click", unlockAudio);
-      window.removeEventListener("touchstart", unlockAudio);
-      window.removeEventListener("touchend", unlockAudio);
-      window.removeEventListener("keydown", unlockAudio);
-      window.removeEventListener("scroll", unlockAudio);
+      // Remove all listeners after first successful unlock
+      if (Howler.ctx && Howler.ctx.state === "running") {
+        window.removeEventListener("touchstart", unlockAudio, true);
+        window.removeEventListener("touchend", unlockAudio, true);
+        window.removeEventListener("click", unlockAudio, true);
+        window.removeEventListener("keydown", unlockAudio, true);
+        document.removeEventListener("scroll", unlockAudio, true);
+      }
     };
-    window.addEventListener("click", unlockAudio, { once: true });
-    window.addEventListener("touchstart", unlockAudio, { once: true });
-    window.addEventListener("touchend", unlockAudio, { once: true });
-    window.addEventListener("keydown", unlockAudio, { once: true });
-    window.addEventListener("scroll", unlockAudio, { once: true });
+    // Use capture phase to fire before anything else
+    window.addEventListener("touchstart", unlockAudio, { capture: true });
+    window.addEventListener("touchend", unlockAudio, { capture: true });
+    window.addEventListener("click", unlockAudio, { capture: true });
+    window.addEventListener("keydown", unlockAudio, { capture: true });
+    document.addEventListener("scroll", unlockAudio, { capture: true });
+
+    // Also try immediately in case context was already created
+    unlockAudio();
   };
 
   onMounted(() => {
