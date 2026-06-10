@@ -31,7 +31,9 @@ onMounted(load);
 <template>
   <div class="all-projects">
     <header class="all-projects-header">
-      <button class="all-projects-back" @click="goHome">← Back to Home</button>
+      <button class="all-projects-back" @click="goHome">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+      </button>
       <h1 class="all-projects-title">All Projects</h1>
     </header>
     <div v-if="loading" class="all-projects-loading">Loading...</div>
@@ -63,21 +65,24 @@ onMounted(load);
   }
 
   &-back {
-    background: transparent !important;
-    border: 2px solid #1a1a2e !important;
-    color: #1a1a2e !important;
-    padding: 10px 20px;
-    border-radius: 50px;
-    font-weight: 600;
-    font-size: 0.9rem;
+    background: #3b6df0 !important;
+    border: none !important;
+    color: #fff !important;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
-    transition: background 0.2s, color 0.2s;
+    transition: background 0.2s, transform 0.2s;
     text-shadow: none !important;
     box-shadow: none !important;
+    padding: 0;
 
     &:hover {
-      background: #1a1a2e !important;
-      color: #f5ede3 !important;
+      background: #2a5ad4 !important;
+      transform: scale(1.05);
     }
   }
 
