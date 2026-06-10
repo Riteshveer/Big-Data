@@ -37,11 +37,10 @@ useClickSound();
 //useHoverSound();
 const { isTouch } = useAgent();
 
-// Show overlay after preloader finishes for audio unlock
+// Show overlay after preloader finishes
 watch(preloaderVisible, (visible) => {
-  if (!visible && !howlerUnlocked.value) {
+  if (!visible && !userHasEntered.value) {
     showTapOverlay.value = true;
-    // Block scrolling while overlay is visible
     document.body.style.overflow = "hidden";
   }
 });
