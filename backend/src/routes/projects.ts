@@ -112,31 +112,25 @@ projects.put("/:id", async (c) => {
   const id = c.req.param("id");
   const body = await c.req.json();
 
-  await c.env.DB.prepare(
-    `UPDATE projects SET
-      title = COALESCE(?, title),
-      description = COALESCE(?, description),
-      theme = COALESCE(?, theme),
-      tags = COALESCE(?, tags),
-      live_url = ?,
-      source_url = ?,
-      poster_url = ?,
-      sort_order = COALESCE(?, sort_order),
-      is_published = COALESCE(?, is_published),
-      updated_at = datetime('now')
-    WHERE id = ?`
-  ).bind(
-    body.title || null,
-    body.description || null,
-    body.theme || null,
-    body.tags ? JSON.stringify(body.tags) : null,
-    body.live_url !== undefined ? body.live_url : null,
-    body.source_url !== undefined ? body.source_url : null,
-    body.poster_url !== undefined ? body.poster_url : null,
-    body.sort_order !== undefined ? body.sort_order : null,
-    body.is_published !== undefined ? (body.is_published ? 1 : 0) : null,
-    id,
-  ).run();
+  const sets: string[] = [];
+  const values: any[] = [];
+
+  if (body.title !== undefined) { sets.push("title = ?"); values.push(body.title); }
+  if (body.description !== undefined) { sets.push("description = ?"); values.push(body.description); }
+  if (body.theme !== undefined) { sets.push("theme = ?"); values.push(body.theme); }
+  if (body.tags !== undefined) { sets.push("tags = ?"); values.push(JSON.stringify(body.tags)); }
+  if (body.live_url !== undefined) { sets.push("live_url = ?"); values.push(body.live_url); }
+  if (body.source_url !== undefined) { sets.push("source_url = ?"); values.push(body.source_url); }
+  if (body.poster_url !== undefined) { sets.push("poster_url = ?"); values.push(body.poster_url); }
+  if (body.sort_order !== undefined) { sets.push("sort_order = ?"); values.push(body.sort_order); }
+  if (body.is_published !== undefined) { sets.push("is_published = ?"); values.push(body.is_published ? 1 : 0); }
+
+  if (sets.length === 0) return c.json({ success: true });
+
+  sets.push("updated_at = datetime('now')");
+  values.push(id);
+
+  await c.env.DB.prepare(`UPDATE projects SET ${sets.join(", ")} WHERE id = ?`).bind(...values).run();
 
   return c.json({ success: true });
 });

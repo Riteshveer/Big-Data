@@ -143,10 +143,23 @@ const moveProject = async (idx: number, direction: number) => {
   if (targetIdx < 0 || targetIdx >= projects.value.length) return;
   const current = projects.value[idx]!;
   const target = projects.value[targetIdx]!;
-  const tempOrder = current.sort_order;
+
+  // If sort_orders are the same, assign sequential values first
+  let currentOrder = current.sort_order;
+  let targetOrder = target.sort_order;
+  if (currentOrder === targetOrder) {
+    // Reassign all projects sequential order
+    for (let i = 0; i < projects.value.length; i++) {
+      await api(`/api/admin/projects/${projects.value[i]!.id}`, { method: "PUT", body: JSON.stringify({ sort_order: i }) });
+    }
+    currentOrder = idx;
+    targetOrder = targetIdx;
+  }
+
+  // Swap
   try {
-    await api(`/api/admin/projects/${current.id}`, { method: "PUT", body: JSON.stringify({ sort_order: target.sort_order }) });
-    await api(`/api/admin/projects/${target.id}`, { method: "PUT", body: JSON.stringify({ sort_order: tempOrder }) });
+    await api(`/api/admin/projects/${current.id}`, { method: "PUT", body: JSON.stringify({ sort_order: targetOrder }) });
+    await api(`/api/admin/projects/${target.id}`, { method: "PUT", body: JSON.stringify({ sort_order: currentOrder }) });
     await load();
     showMsg("Order updated!");
   } catch (e: any) { showMsg(`Error: ${e.message}`); }
