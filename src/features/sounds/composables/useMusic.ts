@@ -12,9 +12,9 @@ import type { MusicTrack } from "../types";
 
 export const useMusic = () => {
   const tickVolumes = () => {
-    // If not on home route, always use base volume
+    // If not on home route, keep background music at 10%
     if (path.value !== "/") {
-      musicTracks.luci.volume(BASE_VOLUMES.luci);
+      musicTracks.luci.volume(0.1);
       musicTracks.about.volume(0);
       return;
     }
