@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
-import PreviewCard from "./PreviewCard.vue";
 import type { ProjectPreview } from "../../../content/types";
 
 const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:8787";
@@ -24,6 +23,7 @@ const load = async () => {
 };
 
 const goHome = () => { window.location.href = "/"; };
+const goToProject = (slug: string) => { window.location.href = `/project/${slug}`; };
 
 onMounted(load);
 </script>
@@ -36,7 +36,15 @@ onMounted(load);
     </header>
     <div v-if="loading" class="all-projects-loading">Loading...</div>
     <div v-else class="all-projects-grid">
-      <PreviewCard v-for="preview in projects" :key="preview.slug" :preview="preview" />
+      <div v-for="preview in projects" :key="preview.slug" class="all-projects-card" @click="goToProject(preview.slug)">
+        <div class="all-projects-card-img">
+          <img v-if="preview.thumbnail" :src="preview.thumbnail" :alt="preview.title" />
+        </div>
+        <div class="all-projects-card-info">
+          <h3>{{ preview.title }}</h3>
+          <p v-if="preview.description">{{ preview.description }}</p>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -92,6 +100,46 @@ onMounted(load);
 
     @media (min-width: 768px) {
       grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    }
+  }
+
+  &-card {
+    cursor: pointer;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.2s;
+
+    &:hover {
+      transform: scale(1.02);
+    }
+
+    &-img {
+      aspect-ratio: 16/9;
+      background: var(--color-beige-500, #e8ddd0);
+      border-radius: 12px;
+      overflow: hidden;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+
+    &-info {
+      padding: 10px 4px;
+
+      h3 {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--color-text-400, #1a1a2e);
+      }
+
+      p {
+        font-size: 0.85rem;
+        color: var(--color-text-300, #666);
+        margin-top: 4px;
+      }
     }
   }
 }

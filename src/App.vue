@@ -48,6 +48,7 @@ watch(preloaderVisible, (visible) => {
 const handleTapEnter = () => {
   showTapOverlay.value = false;
   userHasEntered.value = true;
+  sessionStorage.setItem("userHasEntered", "true");
 
   // Restore scrolling, go to top
   document.body.style.overflow = "";
