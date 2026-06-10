@@ -218,4 +218,28 @@ const update = () => {
   hologramMixer.update(delta / 60);
 };
 
-export const animations = { init, play, actions, update, wakeUp, getIsAwake: () => isAwake, wave };
+const restart = () => {
+  // Reset mixer time to beginning
+  if (mixer) {
+    mixer.setTime(0);
+    mixer.update(0);
+  }
+  if (hologramMixer) {
+    hologramMixer.setTime(0);
+    hologramMixer.update(0);
+  }
+
+  // Reset state
+  isAwake = false;
+  activeAction = null;
+  wavingStrength.value = isFeatureEnabled("introWave") ? 1 : 0;
+
+  // Restart default actions
+  actions.forEach(a => { a.reset(); a.stop(); });
+  hologramActions.forEach(a => { a.reset(); a.stop(); });
+
+  play("desktop-idle");
+  wave();
+};
+
+export const animations = { init, play, actions, update, wakeUp, getIsAwake: () => isAwake, wave, restart };
