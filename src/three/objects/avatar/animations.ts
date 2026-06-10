@@ -7,6 +7,7 @@ import { sceneWeights } from "../../../animations/scenes";
 import { face } from "./face";
 import { sleepingSprite } from "../contact/sleeping-sprite";
 import { playSound } from "../../../features/sounds/utils/sounds";
+import { sprites } from "../../../features/sounds/definitions/sprites";
 import { isFeatureEnabled } from "../../../utils/features";
 import { stopSnoreRepetition } from "../../../features/sounds/core/contact";
 
@@ -175,7 +176,12 @@ const wakeUp = () => {
   if (!sleepingAction || !wakeUpAction || !contactIdleAction) return;
 
   stopSnoreRepetition();
-  playSound("gasp");
+
+  // Play gasp sound at full volume (override sprite volume)
+  const gaspId = playSound("gasp");
+  if (gaspId !== undefined) {
+    sprites.contact.howl.volume(0.8, gaspId);
+  }
 
   //crossfade to wake-up
   sleepingAction.crossFadeTo(wakeUpAction, 0.2);
