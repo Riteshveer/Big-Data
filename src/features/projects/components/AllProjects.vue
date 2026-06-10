@@ -31,7 +31,7 @@ onMounted(load);
 <template>
   <div class="all-projects">
     <header class="all-projects-header">
-      <button class="all-projects-back" @click="goHome">← Back</button>
+      <button class="all-projects-back" @click="goHome">← Back to Home</button>
       <h1 class="all-projects-title">All Projects</h1>
     </header>
     <div v-if="loading" class="all-projects-loading">Loading...</div>
@@ -63,19 +63,21 @@ onMounted(load);
   }
 
   &-back {
-    background: none;
-    border: 2px solid var(--color-text-400, #1a1a2e);
-    color: var(--color-text-400, #1a1a2e);
+    background: transparent !important;
+    border: 2px solid #1a1a2e !important;
+    color: #1a1a2e !important;
     padding: 10px 20px;
     border-radius: 50px;
     font-weight: 600;
     font-size: 0.9rem;
     cursor: pointer;
     transition: background 0.2s, color 0.2s;
+    text-shadow: none !important;
+    box-shadow: none !important;
 
     &:hover {
-      background: var(--color-text-400, #1a1a2e);
-      color: var(--color-beige-400, #f5ede3);
+      background: #1a1a2e !important;
+      color: #f5ede3 !important;
     }
   }
 
