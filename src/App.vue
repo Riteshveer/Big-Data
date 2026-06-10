@@ -17,6 +17,7 @@ import ProjectBackground from "./features/projects/components/ProjectBackground.
 import { useClickSound } from "./features/sounds/composables/useClickSounds";
 import { computed, ref, watch } from "vue";
 import { Howler } from "howler";
+import { userHasEntered } from "./composables/useEntryGate";
 //import { useHoverSound } from "./features/sounds/composables/useHoverSounds";
 
 const { isTransitioning } = useProjectTransition();
@@ -43,6 +44,7 @@ watch(preloaderVisible, (visible) => {
 
 const handleTapEnter = () => {
   showTapOverlay.value = false;
+  userHasEntered.value = true;
   if (Howler.ctx && Howler.ctx.state !== "running") {
     Howler.ctx.resume();
   }
@@ -117,7 +119,7 @@ const handleTapEnter = () => {
   position: fixed;
   inset: 0;
   z-index: 9999;
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(0, 0, 0, 0.85);
   display: flex;
   align-items: center;
   justify-content: center;

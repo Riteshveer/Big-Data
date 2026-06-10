@@ -12,6 +12,7 @@ import { animations } from "../../../animations";
 import { scenes } from "../../../animations/scenes";
 import HeaderHome from "../../../components/HeaderHome.vue";
 import { preloaderVisible } from "../../../composables/usePreloader";
+import { userHasEntered } from "../../../composables/useEntryGate";
 import ScrollIcon from "../../../components/ScrollIcon.vue";
 import { raycast } from "../../../three/utils/raycast";
 import gsap from "gsap";
@@ -114,7 +115,8 @@ watchEffect(() => {
     projectsLoaded &&
     threeInitialized &&
     //(projectId.value === null || isTransitioning.value) &&
-    !preloaderVisible.value
+    !preloaderVisible.value &&
+    userHasEntered.value
   ) {
     animations.init();
   }
