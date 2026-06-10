@@ -18,8 +18,6 @@ import { useClickSound } from "./features/sounds/composables/useClickSounds";
 import { computed, ref, watch } from "vue";
 import { Howler } from "howler";
 import { userHasEntered } from "./composables/useEntryGate";
-import { animations } from "./animations";
-import { animations as avatarAnimations } from "./three/objects/avatar/animations";
 //import { useHoverSound } from "./features/sounds/composables/useHoverSounds";
 
 const { isTransitioning } = useProjectTransition();
@@ -49,11 +47,9 @@ const handleTapEnter = () => {
   showTapOverlay.value = false;
   userHasEntered.value = true;
 
-  // Restore scrolling, go to top, restart all animations fresh
+  // Restore scrolling, go to top
   document.body.style.overflow = "";
   window.scrollTo(0, 0);
-  animations.restart();
-  avatarAnimations.restart();
 
   if (Howler.ctx && Howler.ctx.state !== "running") {
     Howler.ctx.resume();
@@ -129,7 +125,7 @@ const handleTapEnter = () => {
   position: fixed;
   inset: 0;
   z-index: 9999;
-  background: rgba(0, 0, 0, 0.85);
+  background: #000;
   display: flex;
   align-items: center;
   justify-content: center;
