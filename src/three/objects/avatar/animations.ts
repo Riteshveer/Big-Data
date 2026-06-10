@@ -222,23 +222,48 @@ const restart = () => {
   // Reset mixer time to beginning
   if (mixer) {
     mixer.setTime(0);
-    mixer.update(0);
   }
   if (hologramMixer) {
     hologramMixer.setTime(0);
-    hologramMixer.update(0);
   }
 
   // Reset state
   isAwake = false;
-  activeAction = null;
   wavingStrength.value = isFeatureEnabled("introWave") ? 1 : 0;
 
-  // Restart default actions
-  actions.forEach(a => { a.reset(); a.stop(); });
-  hologramActions.forEach(a => { a.reset(); a.stop(); });
+  // Reset all actions to their initial state
+  const desktopIdle = actions.get("desktop-idle");
+  const tIdle = actions.get("t-idle");
+  const sleeping = actions.get("sleeping");
+  const wakeUp = actions.get("wake-up");
+  const contactIdle = actions.get("contact-idle");
+  const waveAction = actions.get("wave");
+  const leftDesktop = actions.get("left-desktop");
 
-  play("desktop-idle");
+  // Stop all
+  actions.forEach(a => a.stop());
+  hologramActions.forEach(a => a.stop());
+
+  // Re-setup like init()
+  if (desktopIdle) { desktopIdle.reset(); desktopIdle.weight = 1; desktopIdle.play(); }
+  if (tIdle) { tIdle.reset(); tIdle.weight = 0; tIdle.play(); }
+  if (leftDesktop) { leftDesktop.reset(); leftDesktop.weight = 0; }
+  if (sleeping) { sleeping.reset(); sleeping.weight = 1; sleeping.play(); }
+  if (wakeUp) { wakeUp.reset(); wakeUp.weight = 0; }
+  if (contactIdle) { contactIdle.reset(); contactIdle.weight = 0; }
+
+  // Re-setup hologram
+  const hDesktopIdle = hologramActions.get("desktop-idle");
+  const hTIdle = hologramActions.get("t-idle");
+  const hLeftDesktop = hologramActions.get("left-desktop");
+
+  if (hDesktopIdle) { hDesktopIdle.reset(); hDesktopIdle.weight = 1; hDesktopIdle.play(); }
+  if (hTIdle) { hTIdle.reset(); hTIdle.weight = 0; hTIdle.play(); }
+  if (hLeftDesktop) { hLeftDesktop.reset(); hLeftDesktop.weight = 0; }
+
+  activeAction = "desktop-idle";
+
+  // Replay wave
   wave();
 };
 
