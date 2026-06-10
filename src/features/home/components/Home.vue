@@ -116,6 +116,17 @@ watch(userHasEntered, (entered) => {
   }
 });
 
+// Initialize animations when everything is ready (core system)
+watchEffect(() => {
+  if (
+    projectsLoaded &&
+    threeInitialized &&
+    !preloaderVisible.value
+  ) {
+    animations.init();
+  }
+});
+
 watch(
   projectVisible,
   (newVal, oldVal) => {
