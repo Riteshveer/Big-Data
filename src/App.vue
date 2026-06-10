@@ -10,6 +10,7 @@ import { useRouteObserver, path } from "./composables/useRouteObserver";
 import Home from "./features/home/components/Home.vue";
 import Project from "./features/projects/components/Project.vue";
 import AdminPage from "./features/admin/AdminPage.vue";
+import AllProjects from "./features/projects/components/AllProjects.vue";
 import { useProjectTransition } from "./composables/useProjectTransition";
 import { useScroll } from "./composables/useScroll";
 import { projectVisible } from "./composables/useRouteObserver";
@@ -23,6 +24,7 @@ import { userHasEntered } from "./composables/useEntryGate";
 const { isTransitioning } = useProjectTransition();
 
 const isAdmin = computed(() => path.value === "/admin");
+const isAllProjects = computed(() => path.value === "/projects");
 const showTapOverlay = ref(false);
 
 useTranslations();
@@ -60,6 +62,9 @@ const handleTapEnter = () => {
 <template>
   <!-- Admin Panel (separate from portfolio) -->
   <AdminPage v-if="isAdmin" />
+
+  <!-- All Projects Page -->
+  <AllProjects v-else-if="isAllProjects" />
 
   <!-- Portfolio Site -->
   <template v-else>

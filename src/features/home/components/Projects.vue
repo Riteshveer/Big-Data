@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, onMounted } from "vue";
+import { ref, watch, onMounted, computed } from "vue";
 import { locale } from "../../../i18n/store";
 import PreviewCard from "../../projects/components/PreviewCard.vue";
 import NotchSection from "../../../components/NotchSection.vue";
@@ -10,6 +10,13 @@ import type { ProjectPreview } from "../../../content/types";
 const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:8787";
 
 const loadedPreviews = ref<ProjectPreview[] | null>(null);
+const displayedPreviews = computed(() => {
+  if (!loadedPreviews.value) return null;
+  return loadedPreviews.value.slice(0, 5);
+});
+const hasMore = computed(() => {
+  return (loadedPreviews.value?.length || 0) > 5;
+});
 const typewriterText = ref("");
 const showCursor = ref(true);
 const titleRef = ref<HTMLElement | null>(null);
@@ -19,6 +26,10 @@ let observer: IntersectionObserver | null = null;
 const emit = defineEmits<{
   (e: "loaded", previews: ProjectPreview[]): void;
 }>();
+
+const goToAllProjects = () => {
+  window.location.href = "/projects";
+};
 
 const loadPreviews = async () => {
   // Load all projects from API only — admin has full control
@@ -91,9 +102,12 @@ onMounted(() => {
     </div>
     <div class="grid">
       <div class="projects-cards">
-        <PreviewCard v-for="preview in loadedPreviews" :key="preview.title" :preview="preview" />
+        <PreviewCard v-for="preview in displayedPreviews" :key="preview.title" :preview="preview" />
         <PreviewCard v-if="isFeatureEnabled('startProject')" />
       </div>
+    </div>
+    <div v-if="hasMore" class="projects-see-more">
+      <a href="/projects" class="projects-see-more-btn" @click.prevent="goToAllProjects">See More</a>
     </div>
   </div>
 </template>
@@ -210,5 +224,29 @@ onMounted(() => {
 @keyframes cursorBlink {
   0%, 100% { opacity: 1; }
   50% { opacity: 0; }
+}
+
+.projects-see-more {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+
+  &-btn {
+    display: inline-block;
+    padding: 12px 32px;
+    border: 2px solid var(--color-text-400);
+    border-radius: var(--radius-md);
+    color: var(--color-text-400);
+    font-weight: 700;
+    font-size: var(--font-size-md);
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+
+    &:hover {
+      background: var(--color-text-400);
+      color: var(--color-beige-400);
+    }
+  }
 }
 </style>
