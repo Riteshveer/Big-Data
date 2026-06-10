@@ -2,6 +2,7 @@
 import { ref, onMounted, onUnmounted } from "vue";
 import Banner from "../../../components/Banner.vue";
 import { preloaderVisible } from "../../../composables/usePreloader";
+import { userHasEntered } from "../../../composables/useEntryGate";
 import { t } from "../../../i18n/utils/translate";
 
 // CONFIG
@@ -154,13 +155,13 @@ onUnmounted(() => {
           <h1
             ref="nameRef"
             class="hero-title"
-            :class="{ 'hero-title-settled': settled }"
+            :class="{ 'hero-title-settled': settled, 'hero-title-animate': userHasEntered }"
             @animationend="handleAnimEnd"
           >
             <span class="hero-title-line">Ritesh</span>
             <span class="hero-title-line hero-title-line-last">Veer</span>
           </h1>
-          <Banner class="hero-banner" :copy="t('job-title')" v-if="!preloaderVisible" animated />
+          <Banner class="hero-banner" :copy="t('job-title')" v-if="!preloaderVisible && userHasEntered" animated />
         </div>
 
         <!-- Packet SVG overlay -->
@@ -246,7 +247,7 @@ onUnmounted(() => {
     font-size: var(--font-size-title-lg);
     line-height: 0.9;
     text-shadow: 4px 0 0 #ff6b35;
-    animation: glitchIn 0.65s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both;
+    opacity: 0;
 
     @include mixins.landscape {
       font-size: var(--font-size-title-lg);
@@ -260,6 +261,10 @@ onUnmounted(() => {
       @include mixins.mq("xl") {
         font-size: var(--font-size-title-xxl);
       }
+    }
+
+    &-animate {
+      animation: glitchIn 0.65s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both;
     }
 
     &-line {
@@ -285,7 +290,7 @@ onUnmounted(() => {
     transform: none;
     margin-top: var(--space-md);
     opacity: 0;
-    animation: glitchIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.38s both;
+    animation: glitchIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both;
 
     @include mixins.mq("sm") {
       right: auto;
