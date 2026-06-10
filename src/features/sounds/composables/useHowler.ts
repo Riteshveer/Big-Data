@@ -90,6 +90,8 @@ export const useHowler = () => {
         window.removeEventListener("click", unlockAudio, true);
         window.removeEventListener("keydown", unlockAudio, true);
         document.removeEventListener("scroll", unlockAudio, true);
+        window.removeEventListener("wheel", unlockAudio, true);
+        window.removeEventListener("mousedown", unlockAudio, true);
       }
     };
     // Use capture phase to fire before anything else
@@ -98,6 +100,8 @@ export const useHowler = () => {
     window.addEventListener("click", unlockAudio, { capture: true });
     window.addEventListener("keydown", unlockAudio, { capture: true });
     document.addEventListener("scroll", unlockAudio, { capture: true });
+    window.addEventListener("wheel", unlockAudio, { capture: true });
+    window.addEventListener("mousedown", unlockAudio, { capture: true });
 
     // Also try immediately in case context was already created
     unlockAudio();
