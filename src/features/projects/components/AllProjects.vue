@@ -112,12 +112,17 @@ onMounted(load);
 
   &-card {
     cursor: pointer;
-    border-radius: 12px;
+    border-radius: 16px;
     overflow: hidden;
-    transition: transform 0.2s;
+    transition: transform 0.2s, box-shadow 0.2s;
+    background: rgba(255, 255, 255, 0.4);
+    box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.08), -4px -4px 12px rgba(255, 255, 255, 0.6), inset 0 1px 1px rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    padding: 10px;
 
     &:hover {
-      transform: scale(1.02);
+      transform: translateY(-4px);
+      box-shadow: 12px 12px 24px rgba(0, 0, 0, 0.1), -6px -6px 16px rgba(255, 255, 255, 0.7), inset 0 1px 1px rgba(255, 255, 255, 0.9);
     }
 
     &-img {
