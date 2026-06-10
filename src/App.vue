@@ -34,15 +34,19 @@ useClickSound();
 //useHoverSound();
 const { isTouch } = useAgent();
 
-// Show tap overlay on mobile after preloader finishes
+// Show overlay after preloader finishes, but keep preloaderVisible true to block animations
 watch(preloaderVisible, (visible) => {
   if (!visible && !howlerUnlocked.value) {
     showTapOverlay.value = true;
+    // Re-set preloaderVisible to block animations until user clicks
+    preloaderVisible.value = true;
   }
 });
 
 const handleTapEnter = () => {
   showTapOverlay.value = false;
+  // Now truly hide preloader — animations will start
+  preloaderVisible.value = false;
   if (Howler.ctx && Howler.ctx.state !== "running") {
     Howler.ctx.resume();
   }
