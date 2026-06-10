@@ -110,18 +110,20 @@ const handleProjectsLoaded = () => {
   projectsLoaded.value = true;
 };
 
+// Initialize animations only after user clicks enter
 watch(userHasEntered, (entered) => {
   if (entered && !preloaderVisible.value) {
-    animations.restart();
+    animations.init();
   }
 });
 
-// Initialize animations when everything is ready (core system)
+// Also handle case where user already entered and preloader finishes after
 watchEffect(() => {
   if (
     projectsLoaded &&
     threeInitialized &&
-    !preloaderVisible.value
+    !preloaderVisible.value &&
+    userHasEntered.value
   ) {
     animations.init();
   }

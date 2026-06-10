@@ -125,7 +125,7 @@ const handleTapEnter = () => {
   position: fixed;
   inset: 0;
   z-index: 9999;
-  background: #000;
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
