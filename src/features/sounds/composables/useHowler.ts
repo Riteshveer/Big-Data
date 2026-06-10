@@ -4,7 +4,6 @@ import { lerp } from "../../../utils/math";
 import { Howler } from "howler";
 import { isFeatureEnabled } from "../../../utils/features";
 import { tick as contactTick } from "../core/contact";
-import { useAgent } from "../../../composables/useAgent";
 import { stopSnoreRepetition } from "../core/contact";
 import { tick as roomTick } from "../core/room";
 import { sounds } from "../definitions/sounds";
@@ -18,7 +17,6 @@ export const soundsEnabled = ref(false);
 Howler.volume(0);
 
 export const useHowler = () => {
-  const { isTouch } = useAgent();
   const enabledVolume = ref<number>(0);
 
   const handleUnlocked = () => {
