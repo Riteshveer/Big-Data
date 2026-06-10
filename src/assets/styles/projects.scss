@@ -96,3 +96,40 @@
   --color-background-400: #f8f9fc;
   --color-background-300: #ffffff;
 }
+
+// Generic themes for API-driven projects
+.project-theme-light {
+  --color-text-400: #1a1a2e;
+  --color-text-300: #3d3d5c;
+  --color-text-200: #5c5c7a;
+
+  --color-hover: #e8e8f0;
+  --color-hover-text: #1a1a2e;
+
+  --color-accent-400: #2563eb;
+  --color-accent-text-400: white;
+
+  --color-grayscale-500: #d1d5db;
+  --color-grayscale-400: #e5e7eb;
+
+  --color-background-400: #f8f9fc;
+  --color-background-300: #ffffff;
+}
+
+.project-theme-dark {
+  --color-text-400: #ffffff;
+  --color-text-300: #c6d2f2;
+  --color-text-200: #9aa8cc;
+
+  --color-hover: #0a1628;
+  --color-hover-text: #ffffff;
+
+  --color-accent-400: #4fa3ff;
+  --color-accent-text-400: white;
+
+  --color-grayscale-500: #2b3a5c;
+  --color-grayscale-400: #1e2d4a;
+
+  --color-background-400: #1a2744;
+  --color-background-300: #0f1a30;
+}

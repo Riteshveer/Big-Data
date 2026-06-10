@@ -86,6 +86,7 @@ watch(
     :class="[
       'project',
       recentProjectId !== null && `project-${recentProjectId}`,
+      content && `project-theme-${(content as any).theme || 'light'}`,
       isTransitioning && `project-transitioning`,
       projectVisible && `project-visible`,
     ]"
@@ -96,7 +97,7 @@ watch(
         :content="content"
         :projectId="recentProjectId"
       />
-      <Footer :class="['project-footer', `project-${recentProjectId}`]"></Footer>
+      <Footer :class="['project-footer', `project-${recentProjectId}`, content && `project-theme-${(content as any).theme || 'light'}`]"></Footer>
     </div>
   </div>
 </template>
