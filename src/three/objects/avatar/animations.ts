@@ -180,7 +180,7 @@ const wakeUp = () => {
   // Play gasp sound at full volume (override sprite volume)
   const gaspId = playSound("gasp");
   if (gaspId !== undefined) {
-    sprites.contact.howl.volume(0.8, gaspId);
+    sprites.contact.howl.volume(1.0, gaspId);
   }
 
   //crossfade to wake-up
