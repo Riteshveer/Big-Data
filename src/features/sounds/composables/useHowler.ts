@@ -87,19 +87,20 @@ export const useHowler = () => {
         window.removeEventListener("touchend", unlockAudio, true);
         window.removeEventListener("click", unlockAudio, true);
         window.removeEventListener("keydown", unlockAudio, true);
-        document.removeEventListener("scroll", unlockAudio, true);
-        window.removeEventListener("wheel", unlockAudio, true);
         window.removeEventListener("mousedown", unlockAudio, true);
+        window.removeEventListener("pointerdown", unlockAudio, true);
+        window.removeEventListener("pointerup", unlockAudio, true);
       }
     };
     // Use capture phase to fire before anything else
+    // Note: browsers only allow audio unlock from trusted gestures: click, touchend, keydown, mousedown, pointerdown
     window.addEventListener("touchstart", unlockAudio, { capture: true });
     window.addEventListener("touchend", unlockAudio, { capture: true });
     window.addEventListener("click", unlockAudio, { capture: true });
     window.addEventListener("keydown", unlockAudio, { capture: true });
-    document.addEventListener("scroll", unlockAudio, { capture: true });
-    window.addEventListener("wheel", unlockAudio, { capture: true });
     window.addEventListener("mousedown", unlockAudio, { capture: true });
+    window.addEventListener("pointerdown", unlockAudio, { capture: true });
+    window.addEventListener("pointerup", unlockAudio, { capture: true });
 
     // Also try immediately in case context was already created
     unlockAudio();
