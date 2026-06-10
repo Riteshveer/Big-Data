@@ -34,19 +34,15 @@ useClickSound();
 //useHoverSound();
 const { isTouch } = useAgent();
 
-// Show overlay after preloader finishes, but keep preloaderVisible true to block animations
+// Show overlay after preloader finishes for audio unlock
 watch(preloaderVisible, (visible) => {
   if (!visible && !howlerUnlocked.value) {
     showTapOverlay.value = true;
-    // Re-set preloaderVisible to block animations until user clicks
-    preloaderVisible.value = true;
   }
 });
 
 const handleTapEnter = () => {
   showTapOverlay.value = false;
-  // Now truly hide preloader — animations will start
-  preloaderVisible.value = false;
   if (Howler.ctx && Howler.ctx.state !== "running") {
     Howler.ctx.resume();
   }
@@ -121,12 +117,11 @@ const handleTapEnter = () => {
   position: fixed;
   inset: 0;
   z-index: 9999;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.3);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  backdrop-filter: blur(2px);
   animation: tapFadeIn 0.3s ease;
 }
 
