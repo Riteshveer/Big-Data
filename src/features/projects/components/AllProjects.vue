@@ -66,10 +66,10 @@ onMounted(load);
     background: none;
     border: 2px solid var(--color-text-400, #1a1a2e);
     color: var(--color-text-400, #1a1a2e);
-    padding: 8px 16px;
-    border-radius: 8px;
+    padding: 10px 20px;
+    border-radius: 50px;
     font-weight: 600;
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     cursor: pointer;
     transition: background 0.2s, color 0.2s;
 
