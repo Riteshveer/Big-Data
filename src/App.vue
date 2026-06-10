@@ -36,7 +36,7 @@ const { isTouch } = useAgent();
 
 // Show tap overlay on mobile after preloader finishes
 watch(preloaderVisible, (visible) => {
-  if (!visible && isTouch.value && !howlerUnlocked.value) {
+  if (!visible && !howlerUnlocked.value) {
     showTapOverlay.value = true;
   }
 });
@@ -55,9 +55,9 @@ const handleTapEnter = () => {
 
   <!-- Portfolio Site -->
   <template v-else>
-    <!-- Mobile tap overlay to unlock audio -->
+    <!-- Overlay to unlock audio -->
     <div v-if="showTapOverlay" class="tap-overlay" @click="handleTapEnter" @touchend="handleTapEnter">
-      <p class="tap-overlay-text">Tap to enter</p>
+      <p class="tap-overlay-text">{{ isTouch ? 'Tap to enter' : 'Click to enter' }}</p>
     </div>
 
     <Header />
