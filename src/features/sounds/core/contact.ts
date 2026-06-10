@@ -5,28 +5,18 @@ import { clamp } from "../../../utils/math";
 import { projectVisible } from "../../../composables/useRouteObserver";
 
 let hasPlayedSnore = false;
-let wasOnContact = false;
 
 export const tick = () => {
   const volume = projectVisible.value ? 0 : clamp(sceneWeights.contact * 0.5, 0, 1);
   sprites.contact.howl.volume(volume);
 
-  const onContact = sceneWeights.contact > 0.3;
-
-  // Play snore only once when user first arrives at contact section
-  if (onContact && !wasOnContact && !hasPlayedSnore) {
+  // Play snore only once per session when user arrives at contact
+  if (!hasPlayedSnore && sceneWeights.contact > 0.3) {
     hasPlayedSnore = true;
     playSound("snore");
   }
-
-  // Reset so it can play again if user leaves and comes back
-  if (!onContact && wasOnContact) {
-    hasPlayedSnore = false;
-  }
-
-  wasOnContact = onContact;
 };
 
 export const stopSnoreRepetition = () => {
-  // Nothing to clean up — no repeating timers
+  // Nothing to clean up
 };
