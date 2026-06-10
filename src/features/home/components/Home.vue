@@ -110,14 +110,8 @@ const handleProjectsLoaded = () => {
   projectsLoaded.value = true;
 };
 
-watchEffect(() => {
-  if (
-    projectsLoaded &&
-    threeInitialized &&
-    //(projectId.value === null || isTransitioning.value) &&
-    !preloaderVisible.value &&
-    userHasEntered.value
-  ) {
+watch(userHasEntered, (entered) => {
+  if (entered && !preloaderVisible.value) {
     animations.restart();
   }
 });
