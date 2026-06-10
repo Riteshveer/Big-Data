@@ -107,6 +107,11 @@ export const useHowler = () => {
     if (!isFeatureEnabled("sounds")) return;
     Howler.volume(0);
 
+    // On desktop, audio context might already be running — start immediately
+    if (Howler.ctx && Howler.ctx.state === "running") {
+      handleUnlocked();
+    }
+
     if (howlerUnlocked.value) {
       soundsEnabled.value = true;
     }
