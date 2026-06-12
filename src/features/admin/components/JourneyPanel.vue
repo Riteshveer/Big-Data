@@ -309,6 +309,9 @@ onMounted(async () => {
           <button class="btn-xs" @click="stopManageContrib">← Back to list</button>
           <h4>Manage Content: {{ contributions.find(c => c.id === managingContribId)?.title }}</h4>
         </div>
+        <p class="manage-desc" v-if="contributions.find(c => c.id === managingContribId)?.description">
+          {{ contributions.find(c => c.id === managingContribId)?.description }}
+        </p>
 
         <div class="items-list">
           <div v-for="(block, idx) in contribContent" :key="block.id" class="item-row">
@@ -362,7 +365,7 @@ onMounted(async () => {
         <div class="add-form">
           <h4>Add Contribution</h4>
           <input v-model="newTitle" class="field-input" placeholder="Title (e.g. 'Apache Spark PR #1234')" />
-          <input v-model="newDesc" class="field-input" placeholder="Description (optional)" />
+          <textarea v-model="newDesc" class="field-input" rows="3" placeholder="Description (optional)"></textarea>
           <input v-model="newUrl" class="field-input" placeholder="URL (optional)" />
           <div class="add-form-row">
             <select v-model="newType" class="field-input" style="max-width:200px">
@@ -400,7 +403,7 @@ onMounted(async () => {
 .toggle input:checked + .toggle-slider::before { transform: translateX(20px); }
 
 .items-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
-.item-row { display: flex; align-items: center; gap: 12px; background: #0f1117; border: 1px solid #2e3250; border-radius: 8px; padding: 12px 16px; }
+.item-row { display: flex; align-items: center; gap: 12px; background: #0f1117; border: 1px solid #2e3250; border-radius: 8px; padding: 16px 16px; min-height: 64px; }
 .item-info { flex: 1; }
 .item-actions { display: flex; gap: 6px; flex-shrink: 0; }
 .item-title { font-size: 0.85rem; color: #fff; font-weight: 600; }
@@ -427,8 +430,9 @@ onMounted(async () => {
 .btn-manage { color: #60a5fa; border-color: #1e3a5f; }
 .btn-manage:hover { background: #1e2a4a; }
 .manage-content { }
-.manage-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+.manage-header { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
 .manage-header h4 { color: #c9d1e8; font-size: 0.9rem; }
+.manage-desc { font-size: 0.8rem; color: #8892b0; margin-bottom: 16px; line-height: 1.5; white-space: pre-line; }
 .content-thumb { width: 60px; height: 40px; object-fit: cover; border-radius: 4px; margin-top: 4px; }
 .content-preview { max-width: 200px; max-height: 120px; border-radius: 6px; border: 1px solid #2e3250; margin-top: 6px; }
 .btn-upload-sm { display: inline-block; background: #2e3250; color: #c9d1e8; padding: 9px 14px; border-radius: 6px; font-size: 0.8rem; cursor: pointer; white-space: nowrap; }
