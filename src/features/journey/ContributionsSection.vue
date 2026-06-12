@@ -57,6 +57,23 @@ const totalContribs = ref(0);
 const totalProjects = ref(0);
 const totalTypes = ref(0);
 
+const animateCounters = () => {
+  const total = statOverrideTotal.value || props.contributions.length;
+  const repos = statOverrideRepos.value || new Set(props.contributions.map(c => c.type)).size;
+  const prs = statOverridePRs.value || 0;
+  const start = performance.now();
+  const duration = 1500;
+  const animate = (now: number) => {
+    const p = Math.min((now - start) / duration, 1);
+    const ease = 1 - Math.pow(1 - p, 3);
+    totalContribs.value = Math.floor(ease * total);
+    totalProjects.value = Math.floor(ease * repos);
+    totalTypes.value = Math.floor(ease * prs);
+    if (p < 1) requestAnimationFrame(animate);
+  };
+  requestAnimationFrame(animate);
+};
+
 const getTypeColor = (type: string) => {
   switch (type) {
     case "open-source": return "#00ffff";
@@ -93,10 +110,12 @@ onMounted(() => {
     if (settings.contrib_typewriter) {
       phrases.value = settings.contrib_typewriter.split(",").map((s: string) => s.trim()).filter(Boolean);
     }
-    // Start typewriter AFTER phrases are loaded
     typewrite();
+    // Animate counters immediately with loaded values
+    animateCounters();
   }).catch(() => {
     typewrite();
+    animateCounters();
   });
 
   // Scroll observer for cards
@@ -106,20 +125,6 @@ onMounted(() => {
         if (entry.isIntersecting) {
           if (entry.target.classList.contains("contrib-stats")) {
             countersVisible.value = true;
-            const total = statOverrideTotal.value || props.contributions.length;
-            const repos = statOverrideRepos.value || new Set(props.contributions.map(c => c.type)).size;
-            const prs = statOverridePRs.value || 0;
-            const start = performance.now();
-            const duration = 1500;
-            const animate = (now: number) => {
-              const p = Math.min((now - start) / duration, 1);
-              const ease = 1 - Math.pow(1 - p, 3);
-              totalContribs.value = Math.floor(ease * total);
-              totalProjects.value = Math.floor(ease * repos);
-              totalTypes.value = Math.floor(ease * prs);
-              if (p < 1) requestAnimationFrame(animate);
-            };
-            requestAnimationFrame(animate);
           }
           if (entry.target.classList.contains("contrib-header")) {
             headerVisible.value = true;
