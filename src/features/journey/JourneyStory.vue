@@ -158,10 +158,9 @@ onUnmounted(() => { observer?.disconnect(); window.removeEventListener("scroll",
    FIX 2 — WIDTH & LAYOUT
    ═══════════════════════════════════════════ */
 .journey__section {
-  background: #0A1628;
-  margin: 0 calc(var(--space-outer, 24px) * -1);
-  padding: 60px var(--space-outer, 24px);
-  border-radius: 20px;
+  background: transparent;
+  padding: 20px 0;
+  border-radius: 0;
 }
 
 .journey__container {

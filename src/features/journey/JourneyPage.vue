@@ -93,7 +93,7 @@ onMounted(load);
         </div>
 
         <!-- Blog -->
-        <div v-if="activeTab === 'blog' && showBlog" class="journey-section journey-section-dark">
+        <div v-if="activeTab === 'blog' && showBlog" class="journey-section">
           <BlogSection :posts="blogPosts" />
         </div>
 
@@ -199,15 +199,18 @@ onMounted(load);
     }
   }
 
-  &-content { max-width: 100%; }
+  &-content {
+    max-width: 100%;
+    background: #0A1628;
+    margin: 0 calc(var(--space-outer, 24px) * -1);
+    padding: 40px var(--space-outer, 24px);
+    border-radius: 20px 20px 0 0;
+    min-height: 60vh;
+  }
 
   &-section {
-    &-dark {
-      background: #0A1628;
-      margin: 0 calc(var(--space-outer, 24px) * -1);
-      padding: 40px var(--space-outer, 24px);
-      border-radius: 20px;
-    }
+    /* All sections blend with the navy content area — no extra background */
+  }
   }
 
   &-posts { display: flex; flex-direction: column; gap: 16px; }

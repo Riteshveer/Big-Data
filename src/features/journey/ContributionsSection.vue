@@ -209,10 +209,9 @@ onUnmounted(() => {
   --text-secondary: #E0E0E0;
   --text-muted: #888888;
 
-  background: var(--bg-dark);
-  margin: 0 calc(var(--space-outer, 24px) * -1);
-  padding: 60px var(--space-outer, 24px);
-  border-radius: 20px;
+  background: transparent;
+  padding: 20px 0;
+  border-radius: 0;
   display: flex;
   flex-direction: column;
   gap: 32px;
