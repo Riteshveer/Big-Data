@@ -141,11 +141,13 @@ onMounted(load);
 
   &-tabs {
     display: flex;
-    gap: 0;
+    gap: 6px;
     margin-left: auto;
-    background: rgba(0, 0, 0, 0.06);
+    background: rgba(255, 255, 255, 0.3);
     border-radius: 50px;
-    padding: 4px;
+    padding: 5px;
+    box-shadow: 6px 6px 12px rgba(0, 0, 0, 0.08), -4px -4px 10px rgba(255, 255, 255, 0.6), inset 0 1px 2px rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.4);
   }
 
   &-tab {
@@ -157,10 +159,15 @@ onMounted(load);
     font-size: 0.95rem;
     color: var(--color-text-300, #555);
     cursor: pointer;
-    transition: background 0.2s, color 0.2s;
+    transition: background 0.2s, color 0.2s, box-shadow 0.2s;
 
-    &:hover { color: var(--color-text-400, #1a1a2e); }
-    &-active { background: var(--color-text-400, #1a1a2e); color: #fff; &:hover { color: #fff; } }
+    &:hover { color: var(--color-text-400, #1a1a2e); background: rgba(255, 255, 255, 0.3); }
+    &-active {
+      background: var(--color-text-400, #1a1a2e);
+      color: #fff;
+      box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+      &:hover { color: #fff; }
+    }
   }
 
   &-content { max-width: 100%; }
