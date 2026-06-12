@@ -93,9 +93,11 @@ onMounted(() => {
     if (settings.contrib_typewriter) {
       phrases.value = settings.contrib_typewriter.split(",").map((s: string) => s.trim()).filter(Boolean);
     }
-  }).catch(() => {});
-
-  typewrite();
+    // Start typewriter AFTER phrases are loaded
+    typewrite();
+  }).catch(() => {
+    typewrite();
+  });
 
   // Scroll observer for cards
   observerRef.value = new IntersectionObserver(
@@ -215,6 +217,9 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   gap: 32px;
+  width: 92%;
+  max-width: 1100px;
+  margin: 0 auto;
 }
 
 /* Header */

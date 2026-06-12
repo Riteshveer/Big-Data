@@ -164,10 +164,12 @@ onUnmounted(() => { observer?.disconnect(); window.removeEventListener("scroll",
 }
 
 .journey__container {
-  width: 90%;
+  width: 92%;
   max-width: 1100px;
   margin: 0 auto;
   position: relative;
+  display: flex;
+  flex-direction: column;
 }
 
 /* Timeline (DO NOT TOUCH scroll logic) */
