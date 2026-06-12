@@ -232,6 +232,7 @@ onUnmounted(() => {
   letter-spacing: 0.02em;
   color: var(--text-primary);
   margin-bottom: 8px;
+  text-shadow: 0 0 20px rgba(255, 107, 0, 0.4), 0 0 40px rgba(255, 107, 0, 0.2);
 
   @media (min-width: 768px) { font-size: 3.5rem; }
 }
