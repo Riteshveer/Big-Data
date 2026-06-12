@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from "vue";
+import BlogSection from "./BlogSection.vue";
 
 const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:8787";
 
@@ -87,18 +88,8 @@ onMounted(load);
     <template v-else-if="visibleTabs.length">
       <div class="journey-content">
         <!-- Blog -->
-        <div v-if="activeTab === 'blog' && showBlog" class="journey-section">
-          <div v-if="blogPosts.length" class="journey-posts">
-            <a v-for="post in blogPosts" :key="post.id" :href="`/blog/${post.slug}`" class="journey-post">
-              <img v-if="post.cover_image_url" :src="post.cover_image_url" class="journey-post-img" />
-              <div class="journey-post-info">
-                <h3>{{ post.title }}</h3>
-                <p v-if="post.excerpt">{{ post.excerpt }}</p>
-                <span v-if="post.published_at" class="journey-post-date">{{ post.published_at }}</span>
-              </div>
-            </a>
-          </div>
-          <p v-else class="journey-empty">No blog posts yet. Check back soon!</p>
+        <div v-if="activeTab === 'blog' && showBlog" class="journey-section journey-section-dark">
+          <BlogSection :posts="blogPosts" />
         </div>
 
         <!-- Contributions -->
@@ -182,6 +173,15 @@ onMounted(load);
   }
 
   &-content { max-width: 100%; }
+
+  &-section {
+    &-dark {
+      background: #0a0a0f;
+      margin: 0 calc(var(--space-outer, 24px) * -1);
+      padding: 40px var(--space-outer, 24px);
+      border-radius: 20px;
+    }
+  }
 
   &-posts { display: flex; flex-direction: column; gap: 16px; }
   &-post {
