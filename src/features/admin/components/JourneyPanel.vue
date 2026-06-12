@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
-import { api } from "../composables/useApi";
+import { api, uploadFile } from "../composables/useApi";
 
 interface Contribution {
   id: number;
@@ -78,7 +78,7 @@ const loadContributions = async () => {
 
 const loadBlog = async () => {
   try {
-    blogPosts.value = await api("/api/admin/blog");
+    blogPosts.value = await api("/api/admin/blog/all");
   } catch (e: any) { showMsg(e.message); }
 };
 
@@ -106,15 +106,17 @@ const addBlogPost = async () => {
 
 const deleteBlogPost = async (id: number) => {
   if (!confirm("Delete this blog post?")) return;
+  const post = blogPosts.value.find(p => p.id === id);
+  if (!post) return;
   try {
-    await api(`/api/admin/blog/${id}`, { method: "DELETE" });
+    await api(`/api/admin/blog/${post.slug}`, { method: "DELETE" });
     await loadBlog();
   } catch (e: any) { showMsg(`Error: ${e.message}`); }
 };
 
 const togglePublish = async (post: BlogPost) => {
   try {
-    await api(`/api/admin/blog/${post.id}`, { method: "PUT", body: JSON.stringify({ is_published: post.is_published ? 0 : 1 }) });
+    await api(`/api/admin/blog/${post.slug}`, { method: "PUT", body: JSON.stringify({ is_published: post.is_published ? 0 : 1 }) });
     await loadBlog();
   } catch (e: any) { showMsg(`Error: ${e.message}`); }
 };
@@ -189,7 +191,6 @@ const handleContribImgUpload = async (e: Event) => {
   if (!input.files?.length) return;
   uploadingContribImg.value = true;
   try {
-    const { uploadFile } = await import("../composables/useApi");
     const result = await uploadFile(input.files[0]!);
     newBlockImage.value = result.url;
     showMsg("Image uploaded!");
