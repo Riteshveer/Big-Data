@@ -12,8 +12,21 @@ interface Contribution {
   sort_order: number;
 }
 
-const activeTab = ref<"settings" | "contributions">("settings");
+interface BlogPost {
+  id: number;
+  slug: string;
+  title: string;
+  content: string;
+  excerpt: string | null;
+  cover_image_url: string | null;
+  tags: string;
+  is_published: number;
+  published_at: string | null;
+}
+
+const activeTab = ref<"settings" | "blog" | "contributions">("settings");
 const contributions = ref<Contribution[]>([]);
+const blogPosts = ref<BlogPost[]>([]);
 const loading = ref(true);
 const message = ref("");
 
@@ -27,6 +40,14 @@ const newDesc = ref("");
 const newUrl = ref("");
 const newType = ref("open-source");
 const newDate = ref("");
+
+// New blog form
+const newBlogTitle = ref("");
+const newBlogSlug = ref("");
+const newBlogExcerpt = ref("");
+const newBlogContent = ref("");
+const newBlogCover = ref("");
+const newBlogTags = ref("");
 
 const loadSettings = async () => {
   try {
@@ -55,6 +76,49 @@ const loadContributions = async () => {
   } catch (e: any) { showMsg(e.message); }
 };
 
+const loadBlog = async () => {
+  try {
+    blogPosts.value = await api("/api/admin/blog");
+  } catch (e: any) { showMsg(e.message); }
+};
+
+const addBlogPost = async () => {
+  if (!newBlogTitle.value.trim()) { showMsg("Error: Title required"); return; }
+  try {
+    const slug = newBlogSlug.value.trim() || newBlogTitle.value.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+    await api("/api/admin/blog", {
+      method: "POST",
+      body: JSON.stringify({
+        title: newBlogTitle.value.trim(),
+        slug,
+        content: newBlogContent.value || "",
+        excerpt: newBlogExcerpt.value.trim() || null,
+        cover_image_url: newBlogCover.value.trim() || null,
+        tags: newBlogTags.value.split(",").map((t: string) => t.trim()).filter(Boolean),
+        is_published: 1,
+      }),
+    });
+    newBlogTitle.value = ""; newBlogSlug.value = ""; newBlogContent.value = ""; newBlogExcerpt.value = ""; newBlogCover.value = ""; newBlogTags.value = "";
+    showMsg("Blog post added!");
+    await loadBlog();
+  } catch (e: any) { showMsg(`Error: ${e.message}`); }
+};
+
+const deleteBlogPost = async (id: number) => {
+  if (!confirm("Delete this blog post?")) return;
+  try {
+    await api(`/api/admin/blog/${id}`, { method: "DELETE" });
+    await loadBlog();
+  } catch (e: any) { showMsg(`Error: ${e.message}`); }
+};
+
+const togglePublish = async (post: BlogPost) => {
+  try {
+    await api(`/api/admin/blog/${post.id}`, { method: "PUT", body: JSON.stringify({ is_published: post.is_published ? 0 : 1 }) });
+    await loadBlog();
+  } catch (e: any) { showMsg(`Error: ${e.message}`); }
+};
+
 const addContribution = async () => {
   if (!newTitle.value.trim()) { showMsg("Error: Title required"); return; }
   try {
@@ -81,6 +145,7 @@ const showMsg = (msg: string) => { message.value = msg; setTimeout(() => (messag
 onMounted(async () => {
   await loadSettings();
   await loadContributions();
+  await loadBlog();
   loading.value = false;
 });
 </script>
@@ -91,6 +156,7 @@ onMounted(async () => {
 
     <div class="tabs">
       <button :class="['tab', activeTab === 'settings' && 'tab-active']" @click="activeTab = 'settings'">Visibility</button>
+      <button :class="['tab', activeTab === 'blog' && 'tab-active']" @click="activeTab = 'blog'">Blog</button>
       <button :class="['tab', activeTab === 'contributions' && 'tab-active']" @click="activeTab = 'contributions'">Contributions</button>
     </div>
 
@@ -116,6 +182,40 @@ onMounted(async () => {
       </div>
 
       <button class="btn-primary" @click="saveToggles">Save Settings</button>
+    </div>
+
+    <!-- Blog Management -->
+    <div v-if="activeTab === 'blog'" class="section">
+      <h3>Blog Posts</h3>
+
+      <div class="items-list">
+        <div v-for="post in blogPosts" :key="post.id" class="item-row">
+          <div class="item-info">
+            <p class="item-title">{{ post.title }}</p>
+            <p class="item-meta">
+              <span :class="post.is_published ? 'status-published' : 'status-draft'">{{ post.is_published ? 'Published' : 'Draft' }}</span>
+              {{ post.published_at || '' }}
+            </p>
+            <p class="item-desc" v-if="post.excerpt">{{ post.excerpt }}</p>
+          </div>
+          <div class="item-actions">
+            <button class="btn-xs" @click="togglePublish(post)">{{ post.is_published ? 'Unpublish' : 'Publish' }}</button>
+            <button class="btn-xs btn-danger-xs" @click="deleteBlogPost(post.id)">✕</button>
+          </div>
+        </div>
+        <p v-if="!blogPosts.length" class="empty">No blog posts yet.</p>
+      </div>
+
+      <div class="add-form">
+        <h4>Add Blog Post</h4>
+        <input v-model="newBlogTitle" class="field-input" placeholder="Post title" />
+        <input v-model="newBlogSlug" class="field-input" placeholder="Slug (auto-generated if empty)" />
+        <input v-model="newBlogExcerpt" class="field-input" placeholder="Short excerpt / summary" />
+        <textarea v-model="newBlogContent" class="field-input" rows="5" placeholder="Post content (plain text or markdown)"></textarea>
+        <input v-model="newBlogCover" class="field-input" placeholder="Cover image URL (optional)" />
+        <input v-model="newBlogTags" class="field-input" placeholder="Tags (comma separated)" />
+        <button class="btn-primary btn-sm-primary" @click="addBlogPost">+ Add Post</button>
+      </div>
     </div>
 
     <!-- Contributions Management -->
@@ -176,6 +276,7 @@ onMounted(async () => {
 .items-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
 .item-row { display: flex; align-items: center; gap: 12px; background: #0f1117; border: 1px solid #2e3250; border-radius: 8px; padding: 12px 16px; }
 .item-info { flex: 1; }
+.item-actions { display: flex; gap: 6px; flex-shrink: 0; }
 .item-title { font-size: 0.85rem; color: #fff; font-weight: 600; }
 .item-meta { font-size: 0.7rem; color: #6b7394; margin-top: 2px; }
 .item-desc { font-size: 0.75rem; color: #8892b0; margin-top: 4px; }
@@ -195,4 +296,6 @@ onMounted(async () => {
 .msg { font-size: 0.85rem; color: #22c55e; margin-bottom: 16px; }
 .msg-error { color: #ff4d6d; }
 .empty { color: #6b7394; font-size: 0.8rem; font-style: italic; }
+.status-published { color: #34d399; font-size: 0.7rem; font-weight: 600; }
+.status-draft { color: #fbbf24; font-size: 0.7rem; font-weight: 600; }
 </style>
