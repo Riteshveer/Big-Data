@@ -177,8 +177,7 @@ onUnmounted(() => {
       <a
         v-for="item in contributions"
         :key="item.id"
-        :href="item.url || '#'"
-        :target="item.url ? '_blank' : ''"
+        :href="`/contribution/${item.id}`"
         class="contrib-card contrib-animate"
       >
         <div class="contrib-card-header">

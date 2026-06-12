@@ -13,6 +13,7 @@ import AdminPage from "./features/admin/AdminPage.vue";
 import AllProjects from "./features/projects/components/AllProjects.vue";
 import JourneyPage from "./features/journey/JourneyPage.vue";
 import BlogPost from "./features/journey/BlogPost.vue";
+import ContributionDetail from "./features/journey/ContributionDetail.vue";
 import { useProjectTransition } from "./composables/useProjectTransition";
 import { useScroll } from "./composables/useScroll";
 import { projectVisible } from "./composables/useRouteObserver";
@@ -29,6 +30,7 @@ const isAdmin = computed(() => path.value === "/admin");
 const isAllProjects = computed(() => path.value === "/projects");
 const isJourney = computed(() => path.value === "/journey");
 const isBlogPost = computed(() => path.value.startsWith("/blog/"));
+const isContribution = computed(() => path.value.startsWith("/contribution/"));
 const showTapOverlay = ref(false);
 
 useTranslations();
@@ -76,6 +78,9 @@ const handleTapEnter = () => {
 
   <!-- Blog Post Page -->
   <BlogPost v-else-if="isBlogPost" />
+
+  <!-- Contribution Detail Page -->
+  <ContributionDetail v-else-if="isContribution" />
 
   <!-- Portfolio Site -->
   <template v-else>
