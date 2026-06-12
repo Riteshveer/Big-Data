@@ -54,11 +54,21 @@ const newBlogContent = ref("");
 const newBlogCover = ref("");
 const newBlogTags = ref("");
 
+// Stats & typewriter settings
+const statTotal = ref("");
+const statRepos = ref("");
+const statPRs = ref("");
+const typewriterPhrases = ref("");
+
 const loadSettings = async () => {
   try {
     const settings = await api("/api/settings");
     showBlog.value = settings.journey_show_blog === "true";
     showContributions.value = settings.journey_show_contributions === "true";
+    statTotal.value = settings.contrib_stat_total || "";
+    statRepos.value = settings.contrib_stat_repos || "";
+    statPRs.value = settings.contrib_stat_prs || "";
+    typewriterPhrases.value = settings.contrib_typewriter || "Open Source, Community, Real-World Impact, Data Engineering";
   } catch { /* */ }
 };
 
@@ -69,6 +79,10 @@ const saveToggles = async () => {
       body: JSON.stringify({
         journey_show_blog: showBlog.value ? "true" : "false",
         journey_show_contributions: showContributions.value ? "true" : "false",
+        contrib_stat_total: statTotal.value,
+        contrib_stat_repos: statRepos.value,
+        contrib_stat_prs: statPRs.value,
+        contrib_typewriter: typewriterPhrases.value,
       }),
     });
     showMsg("Settings saved!");
@@ -249,9 +263,10 @@ onMounted(async () => {
 
     <!-- Visibility Settings -->
     <div v-if="activeTab === 'settings'" class="section">
-      <h3>Journey Page Visibility</h3>
-      <p class="hint">Toggle which tabs are visible on the Journey page. When turned off, the tab won't show for visitors.</p>
+      <h3>Journey Page Settings</h3>
+      <p class="hint">Toggle tabs, set contribution stats, and customize the typewriter animation.</p>
 
+      <h4 style="color:#c9d1e8; margin-bottom:10px;">Tab Visibility</h4>
       <div class="toggle-row">
         <label class="toggle">
           <input type="checkbox" v-model="showBlog" />
@@ -268,7 +283,27 @@ onMounted(async () => {
         <span class="toggle-label">Show Contributions tab</span>
       </div>
 
-      <button class="btn-primary" @click="saveToggles">Save Settings</button>
+      <h4 style="color:#c9d1e8; margin:20px 0 10px;">Contribution Stats (shown on public page)</h4>
+      <div class="settings-row">
+        <div class="field-sm">
+          <label>Total Contributions</label>
+          <input v-model="statTotal" class="field-input" placeholder="e.g. 847" />
+        </div>
+        <div class="field-sm">
+          <label>Repos Contributed To</label>
+          <input v-model="statRepos" class="field-input" placeholder="e.g. 23" />
+        </div>
+        <div class="field-sm">
+          <label>Pull Requests Merged</label>
+          <input v-model="statPRs" class="field-input" placeholder="e.g. 14" />
+        </div>
+      </div>
+
+      <h4 style="color:#c9d1e8; margin:20px 0 10px;">Typewriter Phrases (comma separated)</h4>
+      <input v-model="typewriterPhrases" class="field-input" placeholder="Open Source, Community, Real-World Impact" />
+      <p class="hint" style="margin-top:4px">These cycle in the animated subtitle on the Contributions page.</p>
+
+      <button class="btn-primary" style="margin-top:20px" @click="saveToggles">Save Settings</button>
     </div>
 
     <!-- Blog Management -->
@@ -442,4 +477,7 @@ onMounted(async () => {
 .content-preview { max-width: 200px; max-height: 120px; border-radius: 6px; border: 1px solid #2e3250; margin-top: 6px; }
 .btn-upload-sm { display: inline-block; background: #2e3250; color: #c9d1e8; padding: 9px 14px; border-radius: 6px; font-size: 0.8rem; cursor: pointer; white-space: nowrap; }
 .btn-upload-sm:hover { background: #3a3f5c; }
+.settings-row { display: flex; gap: 12px; flex-wrap: wrap; }
+.field-sm { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 140px; }
+.field-sm label { font-size: 0.7rem; color: #8892b0; text-transform: uppercase; letter-spacing: 0.04em; }
 </style>

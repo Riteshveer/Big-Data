@@ -16,8 +16,14 @@ const observerRef = ref<IntersectionObserver | null>(null);
 const countersVisible = ref(false);
 const headerVisible = ref(false);
 
+// Dynamic settings from API
+const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:8787";
+const statOverrideTotal = ref(0);
+const statOverrideRepos = ref(0);
+const statOverridePRs = ref(0);
+
 // Typewriter effect
-const phrases = ["Open Source", "Community", "Real-World Impact", "Data Engineering"];
+const phrases = ref(["Open Source", "Community", "Real-World Impact", "Data Engineering"]);
 const currentPhrase = ref("");
 const phraseIdx = ref(0);
 const charIdx = ref(0);
@@ -25,7 +31,7 @@ const isDeleting = ref(false);
 let typeTimer: ReturnType<typeof setTimeout> | null = null;
 
 const typewrite = () => {
-  const phrase = phrases[phraseIdx.value]!;
+  const phrase = phrases.value[phraseIdx.value]!;
   if (!isDeleting.value) {
     currentPhrase.value = phrase.slice(0, charIdx.value + 1);
     charIdx.value++;
@@ -39,25 +45,12 @@ const typewrite = () => {
     charIdx.value--;
     if (charIdx.value <= 0) {
       isDeleting.value = false;
-      phraseIdx.value = (phraseIdx.value + 1) % phrases.length;
+      phraseIdx.value = (phraseIdx.value + 1) % phrases.value.length;
       typeTimer = setTimeout(typewrite, 400);
       return;
     }
     typeTimer = setTimeout(typewrite, 40);
   }
-};
-
-// Count-up animation
-const countUp = (target: number, duration: number = 2000) => {
-  const start = performance.now();
-  const el = ref(0);
-  const animate = (now: number) => {
-    const progress = Math.min((now - start) / duration, 1);
-    el.value = Math.floor(progress * target);
-    if (progress < 1) requestAnimationFrame(animate);
-  };
-  requestAnimationFrame(animate);
-  return el;
 };
 
 const totalContribs = ref(0);
@@ -92,6 +85,16 @@ const formatDate = (date: string | null) => {
 };
 
 onMounted(() => {
+  // Load settings from API
+  fetch(`${API_BASE}/api/settings`).then(r => r.json()).then(settings => {
+    if (settings.contrib_stat_total) statOverrideTotal.value = parseInt(settings.contrib_stat_total) || 0;
+    if (settings.contrib_stat_repos) statOverrideRepos.value = parseInt(settings.contrib_stat_repos) || 0;
+    if (settings.contrib_stat_prs) statOverridePRs.value = parseInt(settings.contrib_stat_prs) || 0;
+    if (settings.contrib_typewriter) {
+      phrases.value = settings.contrib_typewriter.split(",").map((s: string) => s.trim()).filter(Boolean);
+    }
+  }).catch(() => {});
+
   typewrite();
 
   // Scroll observer for cards
@@ -101,17 +104,17 @@ onMounted(() => {
         if (entry.isIntersecting) {
           if (entry.target.classList.contains("contrib-stats")) {
             countersVisible.value = true;
-            // Animate counters
-            const total = props.contributions.length;
-            const projects = new Set(props.contributions.map(c => c.type)).size;
+            const total = statOverrideTotal.value || props.contributions.length;
+            const repos = statOverrideRepos.value || new Set(props.contributions.map(c => c.type)).size;
+            const prs = statOverridePRs.value || 0;
             const start = performance.now();
             const duration = 1500;
             const animate = (now: number) => {
               const p = Math.min((now - start) / duration, 1);
               const ease = 1 - Math.pow(1 - p, 3);
               totalContribs.value = Math.floor(ease * total);
-              totalProjects.value = Math.floor(ease * projects);
-              totalTypes.value = Math.floor(ease * 4);
+              totalProjects.value = Math.floor(ease * repos);
+              totalTypes.value = Math.floor(ease * prs);
               if (p < 1) requestAnimationFrame(animate);
             };
             requestAnimationFrame(animate);
@@ -161,11 +164,11 @@ onUnmounted(() => {
       </div>
       <div class="contrib-stat">
         <span class="contrib-stat-num">{{ totalProjects }}</span>
-        <span class="contrib-stat-label">Categories</span>
+        <span class="contrib-stat-label">Repos Contributed To</span>
       </div>
       <div class="contrib-stat">
         <span class="contrib-stat-num">{{ totalTypes }}</span>
-        <span class="contrib-stat-label">Contribution Types</span>
+        <span class="contrib-stat-label">Pull Requests Merged</span>
       </div>
     </div>
 
