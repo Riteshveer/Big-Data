@@ -117,7 +117,7 @@ onMounted(() => {
   height: var(--height-header);
   align-items: center;
   justify-content: center;
-  display: none;
+  display: flex;
   opacity: 0;
   transition:
     opacity 0.3s ease-in-out,
@@ -129,10 +129,6 @@ onMounted(() => {
 
   &-mounted {
     opacity: 1;
-  }
-
-  @include mixins.mq("lg") {
-    display: flex;
   }
 
   &-links {
@@ -184,10 +180,15 @@ onMounted(() => {
     border: none;
     background: none;
     transition: color 0.1s ease-in-out;
-    font-size: var(--font-size-md);
-    width: 128px;
+    font-size: var(--font-size-sm);
+    width: 90px;
     white-space: nowrap;
     text-transform: uppercase;
+
+    @include mixins.mq("md") {
+      font-size: var(--font-size-md);
+      width: 128px;
+    }
 
     &-active {
       color: var(--color-white-400);

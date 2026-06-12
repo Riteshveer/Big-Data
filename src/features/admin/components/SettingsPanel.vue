@@ -21,6 +21,7 @@ const fields = [
   { key: "email", label: "Email" },
   { key: "github_url", label: "GitHub URL" },
   { key: "linkedin_url", label: "LinkedIn URL" },
+  { key: "x_url", label: "X (Twitter) URL" },
 ];
 
 const load = async () => {
