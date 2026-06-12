@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from "vue";
 import BlogSection from "./BlogSection.vue";
+import ContributionsSection from "./ContributionsSection.vue";
 
 const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:8787";
 
@@ -94,17 +95,7 @@ onMounted(load);
 
         <!-- Contributions -->
         <div v-if="activeTab === 'contributions' && showContributions" class="journey-section">
-          <div v-if="contributions.length" class="journey-contributions">
-            <a v-for="item in contributions" :key="item.id" :href="item.url || '#'" :target="item.url ? '_blank' : ''" class="journey-contrib">
-              <div class="journey-contrib-type">{{ item.type }}</div>
-              <div class="journey-contrib-info">
-                <h3>{{ item.title }}</h3>
-                <p v-if="item.description">{{ item.description }}</p>
-              </div>
-              <span v-if="item.date" class="journey-contrib-date">{{ item.date }}</span>
-            </a>
-          </div>
-          <p v-else class="journey-empty">No contributions yet. Check back soon!</p>
+          <ContributionsSection :contributions="contributions" />
         </div>
       </div>
     </template>
