@@ -2,6 +2,7 @@
 import { ref, onMounted, computed } from "vue";
 import BlogSection from "./BlogSection.vue";
 import ContributionsSection from "./ContributionsSection.vue";
+import JourneyStory from "./JourneyStory.vue";
 
 const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:8787";
 
@@ -27,11 +28,12 @@ const showBlog = ref(false);
 const showContributions = ref(false);
 const blogPosts = ref<BlogPost[]>([]);
 const contributions = ref<Contribution[]>([]);
-const activeTab = ref<"blog" | "contributions">("blog");
+const activeTab = ref<"story" | "blog" | "contributions">("story");
 const loading = ref(true);
 
 const visibleTabs = computed(() => {
   const tabs: { id: string; label: string }[] = [];
+  tabs.push({ id: "story", label: "My Story" });
   if (showBlog.value) tabs.push({ id: "blog", label: "Blog" });
   if (showContributions.value) tabs.push({ id: "contributions", label: "Contributions" });
   return tabs;
@@ -44,9 +46,6 @@ const load = async () => {
       const settings = await res.json();
       showBlog.value = settings.journey_show_blog === "true";
       showContributions.value = settings.journey_show_contributions === "true";
-      // Set default active tab
-      if (showBlog.value) activeTab.value = "blog";
-      else if (showContributions.value) activeTab.value = "contributions";
     }
 
     if (showBlog.value) {
@@ -88,6 +87,11 @@ onMounted(load);
 
     <template v-else-if="visibleTabs.length">
       <div class="journey-content">
+        <!-- My Story -->
+        <div v-if="activeTab === 'story'" class="journey-section">
+          <JourneyStory />
+        </div>
+
         <!-- Blog -->
         <div v-if="activeTab === 'blog' && showBlog" class="journey-section journey-section-dark">
           <BlogSection :posts="blogPosts" />
