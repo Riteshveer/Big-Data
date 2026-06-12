@@ -72,12 +72,7 @@ onMounted(load);
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
       </button>
       <h1 class="journey-title">My Journey</h1>
-    </header>
-
-    <div v-if="loading" class="journey-loading">Loading...</div>
-
-    <template v-else-if="visibleTabs.length">
-      <div class="journey-tabs">
+      <div v-if="visibleTabs.length" class="journey-tabs">
         <button
           v-for="tab in visibleTabs"
           :key="tab.id"
@@ -85,7 +80,11 @@ onMounted(load);
           @click="activeTab = tab.id as any"
         >{{ tab.label }}</button>
       </div>
+    </header>
 
+    <div v-if="loading" class="journey-loading">Loading...</div>
+
+    <template v-else-if="visibleTabs.length">
       <div class="journey-content">
         <!-- Blog -->
         <div v-if="activeTab === 'blog' && showBlog" class="journey-section">
@@ -161,11 +160,10 @@ onMounted(load);
   &-tabs {
     display: flex;
     gap: 0;
-    margin-bottom: 32px;
+    margin-left: auto;
     background: rgba(0, 0, 0, 0.06);
     border-radius: 50px;
     padding: 4px;
-    width: fit-content;
   }
 
   &-tab {
