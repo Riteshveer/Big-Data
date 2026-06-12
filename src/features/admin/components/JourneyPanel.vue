@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
 import { api, uploadFile } from "../composables/useApi";
+import BlogEditor from "./BlogEditor.vue";
 
 interface Contribution {
   id: number;
@@ -33,6 +34,10 @@ const message = ref("");
 // Toggle settings
 const showBlog = ref(false);
 const showContributions = ref(false);
+
+// Blog editor state
+const editingBlogSlug = ref<string | null>(null);
+const creatingBlog = ref(false);
 
 // New contribution form
 const newTitle = ref("");
@@ -267,8 +272,9 @@ onMounted(async () => {
     </div>
 
     <!-- Blog Management -->
-    <div v-if="activeTab === 'blog'" class="section">
+    <div v-if="activeTab === 'blog' && !editingBlogSlug && !creatingBlog" class="section">
       <h3>Blog Posts</h3>
+      <button class="btn-primary" style="margin-bottom:16px" @click="creatingBlog = true">+ New Post</button>
 
       <div class="items-list">
         <div v-for="post in blogPosts" :key="post.id" class="item-row">
@@ -281,24 +287,22 @@ onMounted(async () => {
             <p class="item-desc" v-if="post.excerpt">{{ post.excerpt }}</p>
           </div>
           <div class="item-actions">
+            <button class="btn-xs btn-manage" @click="editingBlogSlug = post.slug">Edit</button>
             <button class="btn-xs" @click="togglePublish(post)">{{ post.is_published ? 'Unpublish' : 'Publish' }}</button>
             <button class="btn-xs btn-danger-xs" @click="deleteBlogPost(post.id)">✕</button>
           </div>
         </div>
         <p v-if="!blogPosts.length" class="empty">No blog posts yet.</p>
       </div>
-
-      <div class="add-form">
-        <h4>Add Blog Post</h4>
-        <input v-model="newBlogTitle" class="field-input" placeholder="Post title" />
-        <input v-model="newBlogSlug" class="field-input" placeholder="Slug (auto-generated if empty)" />
-        <input v-model="newBlogExcerpt" class="field-input" placeholder="Short excerpt / summary" />
-        <textarea v-model="newBlogContent" class="field-input" rows="5" placeholder="Post content (plain text or markdown)"></textarea>
-        <input v-model="newBlogCover" class="field-input" placeholder="Cover image URL (optional)" />
-        <input v-model="newBlogTags" class="field-input" placeholder="Tags (comma separated)" />
-        <button class="btn-primary btn-sm-primary" @click="addBlogPost">+ Add Post</button>
-      </div>
     </div>
+
+    <!-- Blog Editor (create/edit) -->
+    <BlogEditor
+      v-if="activeTab === 'blog' && (editingBlogSlug || creatingBlog)"
+      :postSlug="editingBlogSlug"
+      @back="editingBlogSlug = null; creatingBlog = false"
+      @saved="loadBlog"
+    />
 
     <!-- Contributions Management -->
     <div v-if="activeTab === 'contributions'" class="section">
