@@ -12,6 +12,10 @@ const handleLinkClick = (link: string) => {
   lenis.value.scrollTo(link);
 };
 
+const goToJourney = () => {
+  window.location.href = "/journey";
+};
+
 type ActiveLink = "about" | "projects" | "contact";
 const activeLink = ref<ActiveLink | null>(null);
 const sections: ActiveLink[] = ["about", "projects", "contact"];
@@ -87,6 +91,17 @@ onMounted(() => {
         data-hoversound="hover"
       >
         {{ t(section) }}
+      </HeaderLink>
+      <HeaderLink
+        :is-active="false"
+        :class="['header-home-link', 'children-unclickable']"
+        @click="goToJourney"
+        :is-dark-theme="isDarkTheme"
+        aria-label="Journey"
+        data-sound="click"
+        data-hoversound="hover"
+      >
+        JOURNEY
       </HeaderLink>
     </div>
   </div>
