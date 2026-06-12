@@ -2,6 +2,7 @@
 import { ref, onMounted } from "vue";
 import { api, uploadFile } from "../composables/useApi";
 import BlogEditor from "./BlogEditor.vue";
+import JourneyChaptersPanel from "./JourneyChaptersPanel.vue";
 
 interface Contribution {
   id: number;
@@ -25,7 +26,7 @@ interface BlogPost {
   published_at: string | null;
 }
 
-const activeTab = ref<"settings" | "blog" | "contributions">("settings");
+const activeTab = ref<"settings" | "blog" | "contributions" | "chapters">("settings");
 const contributions = ref<Contribution[]>([]);
 const blogPosts = ref<BlogPost[]>([]);
 const loading = ref(true);
@@ -257,9 +258,13 @@ onMounted(async () => {
 
     <div class="tabs">
       <button :class="['tab', activeTab === 'settings' && 'tab-active']" @click="activeTab = 'settings'">Visibility</button>
+      <button :class="['tab', activeTab === 'chapters' && 'tab-active']" @click="activeTab = 'chapters'">My Story</button>
       <button :class="['tab', activeTab === 'blog' && 'tab-active']" @click="activeTab = 'blog'">Blog</button>
       <button :class="['tab', activeTab === 'contributions' && 'tab-active']" @click="activeTab = 'contributions'">Contributions</button>
     </div>
+
+    <!-- Journey Chapters Manager -->
+    <JourneyChaptersPanel v-if="activeTab === 'chapters'" />
 
     <!-- Visibility Settings -->
     <div v-if="activeTab === 'settings'" class="section">
