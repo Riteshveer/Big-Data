@@ -162,6 +162,11 @@ onMounted(() => {
       background-color 0.1s ease-in-out;
     z-index: 1;
     opacity: 0;
+    display: none;
+
+    @include mixins.mq("md") {
+      display: block;
+    }
 
     &-dark {
       background-color: var(--color-cyan-500);
@@ -180,14 +185,16 @@ onMounted(() => {
     border: none;
     background: none;
     transition: color 0.1s ease-in-out;
-    font-size: var(--font-size-sm);
-    width: 90px;
+    font-size: 0.6rem;
+    width: auto;
+    padding: 8px 10px;
     white-space: nowrap;
     text-transform: uppercase;
 
     @include mixins.mq("md") {
       font-size: var(--font-size-md);
       width: 128px;
+      padding: 8px 0;
     }
 
     &-active {

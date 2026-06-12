@@ -119,16 +119,23 @@ onMounted(load);
   &-header {
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 12px;
     margin-bottom: 40px;
+    flex-wrap: wrap;
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 16px;
+    }
   }
 
   &-back {
     background: #3b6df0;
     border: none;
     color: #fff;
-    width: 44px;
-    height: 44px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -136,22 +143,35 @@ onMounted(load);
     cursor: pointer;
     transition: background 0.2s, transform 0.2s;
     padding: 0;
+    flex-shrink: 0;
 
     &:hover { background: #2a5ad4; transform: scale(1.05); }
   }
 
-  &-title { font-size: 2rem; font-weight: 900; color: var(--color-text-400, #1a1a2e); }
+  &-title {
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--color-text-400, #1a1a2e);
+
+    @media (max-width: 768px) { font-size: 1.5rem; }
+  }
   &-loading { color: var(--color-text-300, #666); }
 
   &-tabs {
     display: flex;
-    gap: 6px;
+    gap: 4px;
     margin-left: auto;
     background: rgba(255, 255, 255, 0.3);
     border-radius: 50px;
-    padding: 5px;
+    padding: 4px;
     box-shadow: 6px 6px 12px rgba(0, 0, 0, 0.08), -4px -4px 10px rgba(255, 255, 255, 0.6), inset 0 1px 2px rgba(255, 255, 255, 0.7);
     border: 1px solid rgba(255, 255, 255, 0.4);
+
+    @media (max-width: 768px) {
+      margin-left: 0;
+      width: 100%;
+      justify-content: center;
+    }
   }
 
   &-tab {
@@ -164,6 +184,11 @@ onMounted(load);
     color: var(--color-text-300, #555);
     cursor: pointer;
     transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+
+    @media (max-width: 768px) {
+      padding: 8px 16px;
+      font-size: 0.8rem;
+    }
 
     &:hover { color: var(--color-text-400, #1a1a2e); background: rgba(255, 255, 255, 0.3); }
     &-active {
