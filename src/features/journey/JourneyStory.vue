@@ -133,6 +133,8 @@ onMounted(async () => {
   assignTilts();
 
   await nextTick();
+  // Wait a frame for DOM to render
+  await new Promise(r => setTimeout(r, 100));
 
   // Scroll observer for chapters
   observer = new IntersectionObserver(
@@ -147,7 +149,15 @@ onMounted(async () => {
     { threshold: 0.15 }
   );
 
-  document.querySelectorAll(".journey__chapter").forEach(el => observer?.observe(el));
+  document.querySelectorAll(".journey__chapter").forEach(el => {
+    // If already in viewport, show immediately
+    const rect = el.getBoundingClientRect();
+    if (rect.top < window.innerHeight) {
+      el.classList.add("journey__chapter--visible");
+    } else {
+      observer?.observe(el);
+    }
+  });
 
   window.addEventListener("scroll", handleScroll, { passive: true });
   window.addEventListener("keydown", handleKey);

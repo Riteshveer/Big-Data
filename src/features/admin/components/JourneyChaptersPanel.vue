@@ -330,8 +330,8 @@ onMounted(load);
 .chp-toggle input:checked + .chp-toggle-slider::before { transform: translateX(16px); }
 
 /* Overlay + Panel */
-.chp-overlay { position: fixed; inset: 0; z-index: 9999; background: rgba(0,0,0,0.6); display: flex; justify-content: flex-end; }
-.chp-panel { width: 480px; max-width: 90vw; height: 100%; background: #0d0d14; overflow-y: auto; padding: 28px 24px; animation: slideIn 0.25s ease; }
+.chp-overlay { position: fixed; inset: 0; z-index: 9999; background: rgba(0,0,0,0.6); display: flex; justify-content: flex-end; overflow: hidden; }
+.chp-panel { width: 480px; max-width: 90vw; height: 100%; background: #0d0d14; overflow-y: auto; overscroll-behavior: contain; padding: 28px 24px; animation: slideIn 0.25s ease; }
 .chp-panel h3 { color: #fff; margin-bottom: 20px; }
 
 @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
