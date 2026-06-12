@@ -127,6 +127,43 @@ app.route("/api/admin/uploads", uploads);
 // Admin: Blog
 app.route("/api/admin/blog", blog);
 
+// Admin: Contributions CRUD
+app.get("/api/contributions", async (c) => {
+  const result = await c.env.DB.prepare("SELECT * FROM contributions ORDER BY sort_order ASC").all();
+  return c.json(result.results);
+});
+
+app.post("/api/admin/contributions", async (c) => {
+  const body = await c.req.json();
+  const result = await c.env.DB.prepare(
+    "INSERT INTO contributions (title, description, url, type, date, sort_order) VALUES (?, ?, ?, ?, ?, ?)"
+  ).bind(body.title, body.description || null, body.url || null, body.type || "open-source", body.date || null, body.sort_order || 0).run();
+  return c.json({ id: result.meta.last_row_id, success: true }, 201);
+});
+
+app.put("/api/admin/contributions/:id", async (c) => {
+  const id = c.req.param("id");
+  const body = await c.req.json();
+  const sets: string[] = [];
+  const values: any[] = [];
+  if (body.title !== undefined) { sets.push("title = ?"); values.push(body.title); }
+  if (body.description !== undefined) { sets.push("description = ?"); values.push(body.description); }
+  if (body.url !== undefined) { sets.push("url = ?"); values.push(body.url); }
+  if (body.type !== undefined) { sets.push("type = ?"); values.push(body.type); }
+  if (body.date !== undefined) { sets.push("date = ?"); values.push(body.date); }
+  if (body.sort_order !== undefined) { sets.push("sort_order = ?"); values.push(body.sort_order); }
+  if (sets.length === 0) return c.json({ success: true });
+  values.push(id);
+  await c.env.DB.prepare(`UPDATE contributions SET ${sets.join(", ")} WHERE id = ?`).bind(...values).run();
+  return c.json({ success: true });
+});
+
+app.delete("/api/admin/contributions/:id", async (c) => {
+  const id = c.req.param("id");
+  await c.env.DB.prepare("DELETE FROM contributions WHERE id = ?").bind(id).run();
+  return c.json({ success: true });
+});
+
 // Health check
 app.get("/api/health", (c) => c.json({ status: "ok", timestamp: new Date().toISOString() }));
 

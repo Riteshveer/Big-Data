@@ -5,12 +5,14 @@ import SettingsPanel from "./SettingsPanel.vue";
 import ProjectsPanel from "./ProjectsPanel.vue";
 import UploadsPanel from "./UploadsPanel.vue";
 import BlogPanel from "./BlogPanel.vue";
+import JourneyPanel from "./JourneyPanel.vue";
 
-const activeTab = ref<"settings" | "projects" | "uploads" | "blog">("settings");
+const activeTab = ref<"settings" | "projects" | "uploads" | "blog" | "journey">("settings");
 
 const tabs = [
   { id: "settings", label: "Settings", icon: "⚙️" },
   { id: "projects", label: "Projects", icon: "📁" },
+  { id: "journey", label: "Journey", icon: "🚀" },
   { id: "uploads", label: "Uploads", icon: "🖼️" },
   { id: "blog", label: "Blog", icon: "✍️" },
 ] as const;
@@ -56,6 +58,7 @@ const goHome = () => {
         <ProjectsPanel v-if="activeTab === 'projects'" />
         <UploadsPanel v-if="activeTab === 'uploads'" />
         <BlogPanel v-if="activeTab === 'blog'" />
+        <JourneyPanel v-if="activeTab === 'journey'" />
       </div>
     </main>
   </div>
