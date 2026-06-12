@@ -197,47 +197,52 @@ onUnmounted(() => {
 </template>
 
 <style scoped lang="scss">
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&family=Space+Mono:wght@400;700&display=swap');
 
 .contrib-section {
-  --neon-cyan: #00ffff;
-  --neon-orange: #ff6b00;
-  --bg-dark: #0a0a0f;
-  --bg-card: #111118;
-  --text-primary: #f0f0f5;
-  --text-secondary: #8892b0;
-  --text-muted: #5a6380;
-  --border-subtle: rgba(255, 255, 255, 0.06);
+  --accent: #FF6B00;
+  --accent-light: #FF8C33;
+  --accent-glow: rgba(255, 107, 0, 0.25);
+  --bg-dark: #0A1628;
+  --bg-card: #0D1F3C;
+  --border: #1A3A5C;
+  --text-primary: #FFFFFF;
+  --text-secondary: #E0E0E0;
+  --text-muted: #888888;
 
   background: var(--bg-dark);
   margin: 0 calc(var(--space-outer, 24px) * -1);
   padding: 60px var(--space-outer, 24px);
   border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
 }
 
 /* Header */
 .contrib-header { text-align: center; margin-bottom: 48px; }
 
 .contrib-title {
-  font-family: "Bebas Neue", sans-serif;
+  font-family: "Poppins", sans-serif;
+  font-weight: 900;
   font-size: 2.5rem;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.02em;
   color: var(--text-primary);
   margin-bottom: 8px;
 
   @media (min-width: 768px) { font-size: 3.5rem; }
 }
 
-.contrib-subtitle { font-size: 1rem; color: var(--text-secondary); min-height: 1.5em; }
-.contrib-typed { color: var(--neon-cyan); }
-.contrib-cursor { color: var(--neon-orange); animation: blink 0.7s step-end infinite; }
+.contrib-subtitle { font-family: "Poppins", sans-serif; font-size: 1rem; color: var(--text-secondary); min-height: 1.5em; }
+.contrib-typed { color: var(--accent); }
+.contrib-cursor { color: var(--accent); animation: blink 0.7s step-end infinite; }
 
 .contrib-divider {
   margin: 24px auto 0;
   width: 120px;
   height: 2px;
-  background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent);
-  box-shadow: 0 0 10px var(--neon-cyan), 0 0 30px rgba(0, 255, 255, 0.2);
+  background: var(--accent);
+  box-shadow: 0 0 10px var(--accent-glow);
 }
 
 /* Stats */
@@ -254,13 +259,15 @@ onUnmounted(() => {
 
   &-num {
     display: block;
-    font-family: "Bebas Neue", sans-serif;
+    font-family: "Poppins", sans-serif;
+    font-weight: 900;
     font-size: 2.5rem;
-    color: var(--neon-cyan);
-    text-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+    color: var(--accent);
+    text-shadow: 0 0 10px var(--accent-glow);
   }
 
   &-label {
+    font-family: "Space Mono", monospace;
     font-size: 0.8rem;
     color: var(--text-muted);
     text-transform: uppercase;
@@ -280,8 +287,8 @@ onUnmounted(() => {
 /* Card */
 .contrib-card {
   background: var(--bg-card);
-  border: 1px solid var(--border-subtle);
-  border-radius: 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
   padding: 24px;
   text-decoration: none;
   color: var(--text-primary);
@@ -292,8 +299,8 @@ onUnmounted(() => {
 
   &:hover {
     transform: translateY(-6px);
-    box-shadow: 0 0 24px rgba(0, 255, 255, 0.12);
-    border-color: rgba(0, 255, 255, 0.25);
+    box-shadow: 0 0 20px var(--accent-glow);
+    border-color: var(--accent);
   }
 
   &-header {
@@ -321,9 +328,10 @@ onUnmounted(() => {
   }
 
   &-title {
-    font-family: "Bebas Neue", sans-serif;
+    font-family: "Poppins", sans-serif;
+    font-weight: 800;
     font-size: 1.3rem;
-    letter-spacing: 0.02em;
+    letter-spacing: 0.01em;
     line-height: 1.2;
   }
 
@@ -339,7 +347,7 @@ onUnmounted(() => {
 
   &-link {
     font-size: 0.8rem;
-    color: var(--neon-cyan);
+    color: var(--accent);
     font-weight: 600;
     margin-top: auto;
   }

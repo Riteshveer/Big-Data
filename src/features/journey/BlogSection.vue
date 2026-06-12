@@ -105,23 +105,22 @@ onUnmounted(() => {
 </template>
 
 <style scoped lang="scss">
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&family=Space+Mono:wght@400;700&display=swap');
 
 /* =========================================
    THEME VARIABLES
    ========================================= */
 .blog-section {
-  --neon-cyan: #00ffff;
-  --neon-orange: #ff6b00;
-  --bg-dark: #0a0a0f;
-  --bg-card: #111118;
-  --bg-card-hover: #16161f;
-  --text-primary: #f0f0f5;
-  --text-secondary: #8892b0;
-  --text-muted: #5a6380;
-  --border-subtle: rgba(255, 255, 255, 0.06);
-  --glow-cyan: 0 0 20px rgba(0, 255, 255, 0.15);
-  --glow-orange: 0 0 20px rgba(255, 107, 0, 0.15);
+  --accent: #FF6B00;
+  --accent-light: #FF8C33;
+  --accent-glow: rgba(255, 107, 0, 0.25);
+  --bg-dark: #0A1628;
+  --bg-card: #0D1F3C;
+  --bg-card-hover: #122A4A;
+  --border: #1A3A5C;
+  --text-primary: #FFFFFF;
+  --text-secondary: #E0E0E0;
+  --text-muted: #888888;
 
   display: flex;
   flex-direction: column;
@@ -148,14 +147,16 @@ onUnmounted(() => {
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: var(--glow-cyan);
+    box-shadow: 0 0 20px var(--accent-glow);
 
     .blog-featured-bg {
       transform: scale(1.05);
     }
 
     .blog-cta {
-      box-shadow: 0 0 12px rgba(0, 255, 255, 0.4), inset 0 0 12px rgba(0, 255, 255, 0.1);
+      box-shadow: 0 4px 20px var(--accent-glow);
+      background: var(--accent);
+      color: #fff;
     }
   }
 
@@ -181,8 +182,8 @@ onUnmounted(() => {
     top: 10%;
     bottom: 10%;
     width: 3px;
-    background: var(--neon-cyan);
-    box-shadow: 0 0 10px var(--neon-cyan), 0 0 30px rgba(0, 255, 255, 0.3);
+    background: var(--accent);
+    box-shadow: 0 0 10px var(--accent-glow);
     border-radius: 0 2px 2px 0;
   }
 
@@ -205,9 +206,10 @@ onUnmounted(() => {
   }
 
   &-title {
-    font-family: "Bebas Neue", "Impact", sans-serif;
+    font-family: "Poppins", sans-serif;
+    font-weight: 800;
     font-size: 2rem;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.01em;
     line-height: 1.1;
     margin-bottom: 12px;
 
@@ -246,8 +248,8 @@ onUnmounted(() => {
 
   &-card {
     background: var(--bg-card);
-    border: 1px solid var(--border-subtle);
-    border-radius: 14px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
     overflow: hidden;
     text-decoration: none;
     color: var(--text-primary);
@@ -258,15 +260,17 @@ onUnmounted(() => {
 
     &:hover {
       transform: translateY(-4px);
-      box-shadow: var(--glow-cyan);
-      border-color: rgba(0, 255, 255, 0.2);
+      box-shadow: 0 0 20px var(--accent-glow);
+      border-color: var(--accent);
 
       .blog-grid-card-image img {
         transform: scale(1.08);
       }
 
       .blog-cta {
-        box-shadow: 0 0 12px rgba(0, 255, 255, 0.4), inset 0 0 12px rgba(0, 255, 255, 0.1);
+        box-shadow: 0 4px 20px var(--accent-glow);
+        background: var(--accent);
+        color: #fff;
       }
     }
 
@@ -302,9 +306,10 @@ onUnmounted(() => {
     }
 
     &-title {
-      font-family: "Bebas Neue", "Impact", sans-serif;
+      font-family: "Poppins", sans-serif;
+      font-weight: 800;
       font-size: 1.4rem;
-      letter-spacing: 0.03em;
+      letter-spacing: 0.01em;
       line-height: 1.2;
     }
 
@@ -337,37 +342,42 @@ onUnmounted(() => {
 }
 
 .blog-tag {
+  font-family: "Space Mono", monospace;
   font-size: 0.7rem;
-  font-weight: 600;
+  font-weight: 700;
   padding: 3px 10px;
   border-radius: 20px;
-  border: 1px solid rgba(0, 255, 255, 0.3);
-  color: var(--neon-cyan);
-  background: rgba(0, 255, 255, 0.05);
+  border: 1px solid var(--accent);
+  color: #fff;
+  background: #0D2247;
   text-transform: uppercase;
   letter-spacing: 0.04em;
   transition: box-shadow 0.3s, background 0.3s;
 
   &:hover {
-    box-shadow: 0 0 8px rgba(0, 255, 255, 0.4);
-    background: rgba(0, 255, 255, 0.1);
+    box-shadow: 0 0 8px var(--accent-glow);
+    background: #1A3A5C;
   }
 }
 
 .blog-cta {
   display: inline-block;
   margin-top: 8px;
+  font-family: "Poppins", sans-serif;
   font-size: 0.8rem;
-  font-weight: 600;
-  color: var(--neon-cyan);
-  border: 1px solid rgba(0, 255, 255, 0.4);
+  font-weight: 700;
+  color: var(--accent);
+  border: 2px solid var(--accent);
   padding: 6px 16px;
-  border-radius: 6px;
-  transition: box-shadow 0.3s, background 0.3s;
+  border-radius: 999px;
+  transition: box-shadow 0.3s, background 0.3s, color 0.3s;
   width: fit-content;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 
   &:hover {
-    background: rgba(0, 255, 255, 0.08);
+    background: var(--accent);
+    color: #fff;
   }
 }
 

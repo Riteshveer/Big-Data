@@ -178,7 +178,7 @@ onMounted(load);
 
   &-section {
     &-dark {
-      background: #0a0a0f;
+      background: #0A1628;
       margin: 0 calc(var(--space-outer, 24px) * -1);
       padding: 40px var(--space-outer, 24px);
       border-radius: 20px;

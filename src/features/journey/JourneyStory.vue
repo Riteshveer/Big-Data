@@ -224,7 +224,7 @@ onUnmounted(() => {
 </template>
 
 <style scoped lang="scss">
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&family=Space+Mono:wght@400;700&display=swap');
 
 .journey__story {
   position: relative;
@@ -248,10 +248,10 @@ onUnmounted(() => {
 .journey__timeline-line {
   width: 100%;
   height: 100%;
-  background: linear-gradient(to bottom, #00ffff, #ff6b00);
+  background: #FF6B00;
   transform-origin: top;
   border-radius: 2px;
-  box-shadow: 0 0 8px rgba(0, 255, 255, 0.3);
+  box-shadow: 0 0 8px rgba(255, 107, 0, 0.3);
 }
 
 /* Chapter */
@@ -297,11 +297,11 @@ onUnmounted(() => {
   top: 50px;
   width: 14px;
   height: 14px;
-  background: #00ffff;
+  background: #FF6B00;
   border-radius: 50%;
   transform: translateX(-50%) scale(0);
   transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-  box-shadow: 0 0 12px #00ffff, 0 0 24px rgba(0, 255, 255, 0.3);
+  box-shadow: 0 0 12px rgba(255, 107, 0, 0.6);
   z-index: 2;
 
   @media (max-width: 767px) { left: 20px; }
@@ -312,11 +312,11 @@ onUnmounted(() => {
 
 .journey__year {
   display: inline-block;
-  font-family: "Bebas Neue", sans-serif;
-  font-size: 1.3rem;
-  color: #ff6b00;
-  background: rgba(255, 107, 0, 0.1);
-  border: 1px solid rgba(255, 107, 0, 0.3);
+  font-family: "Poppins", sans-serif;
+  font-weight: 800;
+  font-size: 1.1rem;
+  color: #fff;
+  background: #FF6B00;
   padding: 4px 14px;
   border-radius: 6px;
   margin-bottom: 8px;
@@ -326,10 +326,11 @@ onUnmounted(() => {
 }
 
 .journey__title {
-  font-family: "Bebas Neue", sans-serif;
+  font-family: "Poppins", sans-serif;
+  font-weight: 800;
   font-size: 1.8rem;
-  color: #f0f0f5;
-  letter-spacing: 0.02em;
+  color: #fff;
+  letter-spacing: 0.01em;
   margin-bottom: 12px;
   opacity: 0;
   transform: translateY(10px);
@@ -337,8 +338,9 @@ onUnmounted(() => {
 }
 
 .journey__story {
+  font-family: "Poppins", sans-serif;
   font-size: 0.95rem;
-  color: #8892b0;
+  color: #E0E0E0;
   line-height: 1.8;
   margin-bottom: 16px;
   opacity: 0;
@@ -348,8 +350,8 @@ onUnmounted(() => {
 
 /* Mindset shift */
 .journey__mindset {
-  background: rgba(0, 255, 255, 0.03);
-  border-left: 3px solid #00ffff;
+  background: #0D1F3C;
+  border-left: 3px solid #FF6B00;
   border-radius: 0 8px 8px 0;
   padding: 12px 16px;
   margin-bottom: 16px;
@@ -361,7 +363,7 @@ onUnmounted(() => {
   transition: opacity 0.4s ease, transform 0.4s ease;
 
   &-icon { font-size: 1.1rem; flex-shrink: 0; }
-  p { color: #c9d1e8; font-size: 0.9rem; font-style: italic; margin: 0; line-height: 1.6; }
+  p { color: #E0E0E0; font-family: "Space Mono", monospace; font-size: 0.85rem; font-style: italic; margin: 0; line-height: 1.6; }
 }
 
 /* Skills */
@@ -373,13 +375,14 @@ onUnmounted(() => {
 }
 
 .journey__skill {
+  font-family: "Space Mono", monospace;
   font-size: 0.75rem;
-  font-weight: 600;
+  font-weight: 700;
   padding: 4px 12px;
   border-radius: 20px;
-  border: 1px solid rgba(0, 255, 255, 0.3);
-  color: #00ffff;
-  background: rgba(0, 255, 255, 0.05);
+  border: 1px solid #FF6B00;
+  color: #fff;
+  background: #0D2247;
   opacity: 0;
   transform: scale(0);
   transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -389,8 +392,8 @@ onUnmounted(() => {
   }
 
   &:hover {
-    box-shadow: 0 0 10px rgba(0, 255, 255, 0.4);
-    background: rgba(0, 255, 255, 0.1);
+    box-shadow: 0 0 10px rgba(255, 107, 0, 0.4);
+    background: #1A3A5C;
   }
 }
 
@@ -404,8 +407,8 @@ onUnmounted(() => {
 }
 
 .journey__polaroid {
-  background: #1a1d2e;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: #0D1F3C;
+  border: 1px solid #FF6B00;
   border-radius: 6px;
   padding: 6px;
   width: 140px;
@@ -414,13 +417,13 @@ onUnmounted(() => {
 
   &:hover {
     transform: rotate(0deg) scale(1.05) !important;
-    box-shadow: 0 0 16px rgba(0, 255, 255, 0.2);
+    box-shadow: 0 0 16px rgba(255, 107, 0, 0.3);
     z-index: 10;
   }
 
   img { width: 100%; height: 90px; object-fit: cover; border-radius: 4px; }
 
-  &-caption { font-size: 0.65rem; color: #5a6380; margin-top: 4px; text-align: center; }
+  &-caption { font-family: "Space Mono", monospace; font-size: 0.65rem; color: #E0E0E0; margin-top: 4px; text-align: center; }
 }
 
 /* Lightbox */
@@ -451,7 +454,7 @@ onUnmounted(() => {
 @keyframes lbZoomIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
 /* Background */
-.journey__story { background: #0a0a0f; margin: 0 calc(var(--space-outer, 24px) * -1); padding: 60px var(--space-outer, 24px); border-radius: 20px; }
+.journey__story { background: #0A1628; margin: 0 calc(var(--space-outer, 24px) * -1); padding: 60px var(--space-outer, 24px); border-radius: 20px; }
 
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
