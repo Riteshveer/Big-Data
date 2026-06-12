@@ -12,6 +12,7 @@ import Project from "./features/projects/components/Project.vue";
 import AdminPage from "./features/admin/AdminPage.vue";
 import AllProjects from "./features/projects/components/AllProjects.vue";
 import JourneyPage from "./features/journey/JourneyPage.vue";
+import BlogPost from "./features/journey/BlogPost.vue";
 import { useProjectTransition } from "./composables/useProjectTransition";
 import { useScroll } from "./composables/useScroll";
 import { projectVisible } from "./composables/useRouteObserver";
@@ -27,6 +28,7 @@ const { isTransitioning } = useProjectTransition();
 const isAdmin = computed(() => path.value === "/admin");
 const isAllProjects = computed(() => path.value === "/projects");
 const isJourney = computed(() => path.value === "/journey");
+const isBlogPost = computed(() => path.value.startsWith("/blog/"));
 const showTapOverlay = ref(false);
 
 useTranslations();
@@ -71,6 +73,9 @@ const handleTapEnter = () => {
 
   <!-- Journey Page -->
   <JourneyPage v-else-if="isJourney" />
+
+  <!-- Blog Post Page -->
+  <BlogPost v-else-if="isBlogPost" />
 
   <!-- Portfolio Site -->
   <template v-else>
