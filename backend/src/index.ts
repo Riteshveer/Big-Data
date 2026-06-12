@@ -164,6 +164,43 @@ app.delete("/api/admin/contributions/:id", async (c) => {
   return c.json({ success: true });
 });
 
+// Contribution content CRUD
+app.get("/api/contributions/:id/content", async (c) => {
+  const id = c.req.param("id");
+  const result = await c.env.DB.prepare("SELECT * FROM contribution_content WHERE contribution_id = ? ORDER BY sort_order ASC").bind(id).all();
+  return c.json(result.results);
+});
+
+app.post("/api/admin/contributions/:id/content", async (c) => {
+  const id = c.req.param("id");
+  const body = await c.req.json();
+  const result = await c.env.DB.prepare(
+    "INSERT INTO contribution_content (contribution_id, title, description, image_url, sort_order) VALUES (?, ?, ?, ?, ?)"
+  ).bind(id, body.title || null, body.description || null, body.image_url || null, body.sort_order || 0).run();
+  return c.json({ id: result.meta.last_row_id, success: true }, 201);
+});
+
+app.put("/api/admin/contributions/:id/content/:contentId", async (c) => {
+  const contentId = c.req.param("contentId");
+  const body = await c.req.json();
+  const sets: string[] = [];
+  const values: any[] = [];
+  if (body.title !== undefined) { sets.push("title = ?"); values.push(body.title); }
+  if (body.description !== undefined) { sets.push("description = ?"); values.push(body.description); }
+  if (body.image_url !== undefined) { sets.push("image_url = ?"); values.push(body.image_url); }
+  if (body.sort_order !== undefined) { sets.push("sort_order = ?"); values.push(body.sort_order); }
+  if (sets.length === 0) return c.json({ success: true });
+  values.push(contentId);
+  await c.env.DB.prepare(`UPDATE contribution_content SET ${sets.join(", ")} WHERE id = ?`).bind(...values).run();
+  return c.json({ success: true });
+});
+
+app.delete("/api/admin/contributions/:id/content/:contentId", async (c) => {
+  const contentId = c.req.param("contentId");
+  await c.env.DB.prepare("DELETE FROM contribution_content WHERE id = ?").bind(contentId).run();
+  return c.json({ success: true });
+});
+
 // Health check
 app.get("/api/health", (c) => c.json({ status: "ok", timestamp: new Date().toISOString() }));
 

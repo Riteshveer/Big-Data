@@ -140,6 +140,87 @@ const deleteContribution = async (id: number) => {
   } catch (e: any) { showMsg(`Error: ${e.message}`); }
 };
 
+// Manage contribution content
+interface ContentBlock {
+  id: number;
+  contribution_id: number;
+  title: string | null;
+  description: string | null;
+  image_url: string | null;
+  sort_order: number;
+}
+
+const managingContribId = ref<number | null>(null);
+const contribContent = ref<ContentBlock[]>([]);
+const newBlockTitle = ref("");
+const newBlockDesc = ref("");
+const newBlockImage = ref("");
+const uploadingContribImg = ref(false);
+
+const startManageContrib = async (id: number) => {
+  managingContribId.value = id;
+  await loadContribContent(id);
+};
+
+const stopManageContrib = () => { managingContribId.value = null; };
+
+const loadContribContent = async (id: number) => {
+  try {
+    contribContent.value = await api(`/api/contributions/${id}/content`);
+  } catch (e: any) { showMsg(e.message); }
+};
+
+const addContentBlock = async () => {
+  if (!managingContribId.value) return;
+  if (!newBlockTitle.value.trim() && !newBlockDesc.value.trim() && !newBlockImage.value.trim()) { showMsg("Error: Add at least a title, description, or image"); return; }
+  try {
+    await api(`/api/admin/contributions/${managingContribId.value}/content`, {
+      method: "POST",
+      body: JSON.stringify({ title: newBlockTitle.value.trim() || null, description: newBlockDesc.value.trim() || null, image_url: newBlockImage.value.trim() || null, sort_order: contribContent.value.length }),
+    });
+    newBlockTitle.value = ""; newBlockDesc.value = ""; newBlockImage.value = "";
+    showMsg("Content added!");
+    await loadContribContent(managingContribId.value);
+  } catch (e: any) { showMsg(`Error: ${e.message}`); }
+};
+
+const handleContribImgUpload = async (e: Event) => {
+  const input = e.target as HTMLInputElement;
+  if (!input.files?.length) return;
+  uploadingContribImg.value = true;
+  try {
+    const { uploadFile } = await import("../composables/useApi");
+    const result = await uploadFile(input.files[0]!);
+    newBlockImage.value = result.url;
+    showMsg("Image uploaded!");
+  } catch (err: any) { showMsg(`Error: ${err.message}`); }
+  uploadingContribImg.value = false;
+  input.value = "";
+};
+
+const deleteContentBlock = async (contentId: number) => {
+  if (!confirm("Delete this content block?") || !managingContribId.value) return;
+  try {
+    await api(`/api/admin/contributions/${managingContribId.value}/content/${contentId}`, { method: "DELETE" });
+    await loadContribContent(managingContribId.value);
+  } catch (e: any) { showMsg(`Error: ${e.message}`); }
+};
+
+const moveContentBlock = async (contentId: number, direction: number) => {
+  if (!managingContribId.value) return;
+  const idx = contribContent.value.findIndex(c => c.id === contentId);
+  const targetIdx = idx + direction;
+  if (targetIdx < 0 || targetIdx >= contribContent.value.length) return;
+  const current = contribContent.value[idx]!;
+  const target = contribContent.value[targetIdx]!;
+  const tempOrder = current.sort_order;
+  try {
+    await api(`/api/admin/contributions/${managingContribId.value}/content/${current.id}`, { method: "PUT", body: JSON.stringify({ sort_order: target.sort_order }) });
+    await api(`/api/admin/contributions/${managingContribId.value}/content/${target.id}`, { method: "PUT", body: JSON.stringify({ sort_order: tempOrder }) });
+    await loadContribContent(managingContribId.value);
+  } catch (e: any) { showMsg(`Error: ${e.message}`); }
+};
+
 const showMsg = (msg: string) => { message.value = msg; setTimeout(() => (message.value = ""), 4000); };
 
 onMounted(async () => {
@@ -222,34 +303,79 @@ onMounted(async () => {
     <div v-if="activeTab === 'contributions'" class="section">
       <h3>Contributions</h3>
 
-      <div class="items-list">
-        <div v-for="item in contributions" :key="item.id" class="item-row">
-          <div class="item-info">
-            <p class="item-title">{{ item.title }}</p>
-            <p class="item-meta" v-if="item.type || item.date">{{ item.type }} {{ item.date ? `• ${item.date}` : '' }}</p>
-            <p class="item-desc" v-if="item.description">{{ item.description.slice(0, 80) }}</p>
-          </div>
-          <button class="btn-xs btn-danger-xs" @click="deleteContribution(item.id)">✕</button>
+      <!-- Managing content for a specific contribution -->
+      <div v-if="managingContribId" class="manage-content">
+        <div class="manage-header">
+          <button class="btn-xs" @click="stopManageContrib">← Back to list</button>
+          <h4>Manage Content: {{ contributions.find(c => c.id === managingContribId)?.title }}</h4>
         </div>
-        <p v-if="!contributions.length" class="empty">No contributions yet.</p>
+
+        <div class="items-list">
+          <div v-for="(block, idx) in contribContent" :key="block.id" class="item-row">
+            <div class="item-info">
+              <p class="item-title" v-if="block.title">{{ block.title }}</p>
+              <p class="item-desc" v-if="block.description">{{ block.description.slice(0, 80) }}...</p>
+              <img v-if="block.image_url" :src="block.image_url" class="content-thumb" />
+            </div>
+            <div class="item-actions">
+              <button class="btn-xs" @click="moveContentBlock(block.id, -1)" :disabled="idx === 0">↑</button>
+              <button class="btn-xs" @click="moveContentBlock(block.id, 1)" :disabled="idx === contribContent.length - 1">↓</button>
+              <button class="btn-xs btn-danger-xs" @click="deleteContentBlock(block.id)">✕</button>
+            </div>
+          </div>
+          <p v-if="!contribContent.length" class="empty">No content blocks yet.</p>
+        </div>
+
+        <div class="add-form">
+          <h4>Add Content Block</h4>
+          <input v-model="newBlockTitle" class="field-input" placeholder="Paragraph title (optional)" />
+          <textarea v-model="newBlockDesc" class="field-input" rows="3" placeholder="Description / paragraph text"></textarea>
+          <div class="add-form-row">
+            <input v-model="newBlockImage" class="field-input" placeholder="Image URL (or upload below)" readonly style="flex:1" />
+            <label class="btn-upload-sm">
+              {{ uploadingContribImg ? "..." : "Upload" }}
+              <input type="file" accept="image/*" @change="handleContribImgUpload" hidden />
+            </label>
+          </div>
+          <img v-if="newBlockImage" :src="newBlockImage" class="content-preview" />
+          <button class="btn-primary btn-sm-primary" @click="addContentBlock">+ Add Block</button>
+        </div>
       </div>
 
-      <div class="add-form">
-        <h4>Add Contribution</h4>
-        <input v-model="newTitle" class="field-input" placeholder="Title (e.g. 'Apache Spark PR #1234')" />
-        <input v-model="newDesc" class="field-input" placeholder="Description (optional)" />
-        <input v-model="newUrl" class="field-input" placeholder="URL (optional)" />
-        <div class="add-form-row">
-          <select v-model="newType" class="field-input" style="max-width:200px">
-            <option value="open-source">Open Source</option>
-            <option value="talk">Talk / Presentation</option>
-            <option value="article">Article</option>
-            <option value="community">Community</option>
-          </select>
-          <input v-model="newDate" class="field-input" placeholder="Date (e.g. 2025-03)" style="max-width:160px" />
+      <!-- Contributions list -->
+      <template v-else>
+        <div class="items-list">
+          <div v-for="item in contributions" :key="item.id" class="item-row">
+            <div class="item-info">
+              <p class="item-title">{{ item.title }}</p>
+              <p class="item-meta" v-if="item.type || item.date">{{ item.type }} {{ item.date ? `• ${item.date}` : '' }}</p>
+              <p class="item-desc" v-if="item.description">{{ item.description.slice(0, 80) }}</p>
+            </div>
+            <div class="item-actions">
+              <button class="btn-xs btn-manage" @click="startManageContrib(item.id)">Manage</button>
+              <button class="btn-xs btn-danger-xs" @click="deleteContribution(item.id)">✕</button>
+            </div>
+          </div>
+          <p v-if="!contributions.length" class="empty">No contributions yet.</p>
         </div>
-        <button class="btn-primary btn-sm-primary" @click="addContribution">+ Add</button>
-      </div>
+
+        <div class="add-form">
+          <h4>Add Contribution</h4>
+          <input v-model="newTitle" class="field-input" placeholder="Title (e.g. 'Apache Spark PR #1234')" />
+          <input v-model="newDesc" class="field-input" placeholder="Description (optional)" />
+          <input v-model="newUrl" class="field-input" placeholder="URL (optional)" />
+          <div class="add-form-row">
+            <select v-model="newType" class="field-input" style="max-width:200px">
+              <option value="open-source">Open Source</option>
+              <option value="talk">Talk / Presentation</option>
+              <option value="article">Article</option>
+              <option value="community">Community</option>
+            </select>
+            <input v-model="newDate" class="field-input" placeholder="Date (e.g. 2025-03)" style="max-width:160px" />
+          </div>
+          <button class="btn-primary btn-sm-primary" @click="addContribution">+ Add</button>
+        </div>
+      </template>
     </div>
   </div>
 </template>
@@ -298,4 +424,13 @@ onMounted(async () => {
 .empty { color: #6b7394; font-size: 0.8rem; font-style: italic; }
 .status-published { color: #34d399; font-size: 0.7rem; font-weight: 600; }
 .status-draft { color: #fbbf24; font-size: 0.7rem; font-weight: 600; }
+.btn-manage { color: #60a5fa; border-color: #1e3a5f; }
+.btn-manage:hover { background: #1e2a4a; }
+.manage-content { }
+.manage-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+.manage-header h4 { color: #c9d1e8; font-size: 0.9rem; }
+.content-thumb { width: 60px; height: 40px; object-fit: cover; border-radius: 4px; margin-top: 4px; }
+.content-preview { max-width: 200px; max-height: 120px; border-radius: 6px; border: 1px solid #2e3250; margin-top: 6px; }
+.btn-upload-sm { display: inline-block; background: #2e3250; color: #c9d1e8; padding: 9px 14px; border-radius: 6px; font-size: 0.8rem; cursor: pointer; white-space: nowrap; }
+.btn-upload-sm:hover { background: #3a3f5c; }
 </style>
