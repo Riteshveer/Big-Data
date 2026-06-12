@@ -209,8 +209,7 @@ onMounted(load);
   }
 
   &-section {
-    /* All sections blend with the navy content area — no extra background */
-  }
+    /* All sections blend with the navy content area */
   }
 
   &-posts { display: flex; flex-direction: column; gap: 16px; }
