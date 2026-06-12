@@ -74,7 +74,8 @@ const loadChapters = async () => {
       if (settings.journey_chapters) {
         const parsed = JSON.parse(settings.journey_chapters);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          chapters.value = parsed.filter((c: Chapter) => c.visible);
+          // Show all chapters (visible filter removed — admin can delete if not wanted)
+          chapters.value = parsed;
           return;
         }
       }
@@ -269,34 +270,22 @@ onUnmounted(() => {
   position: relative;
   padding: 40px 0;
   display: flex;
-  opacity: 0;
-  transition: opacity 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 
   &--left {
     justify-content: flex-start;
     padding-right: 55%;
-    transform: translateX(-60px);
-    @media (max-width: 767px) { padding-right: 0; padding-left: 50px; transform: translateX(-30px); }
+    @media (max-width: 767px) { padding-right: 0; padding-left: 50px; }
   }
 
   &--right {
     justify-content: flex-end;
     padding-left: 55%;
-    transform: translateX(60px);
-    @media (max-width: 767px) { padding-left: 50px; padding-right: 0; transform: translateX(-30px); justify-content: flex-start; }
+    @media (max-width: 767px) { padding-left: 50px; padding-right: 0; justify-content: flex-start; }
   }
 
   &--visible {
-    opacity: 1;
-    transform: translateX(0);
-
-    .journey__node { transform: scale(1); }
-    .journey__year { opacity: 1; transform: translateY(0); transition-delay: 0ms; }
-    .journey__title { opacity: 1; transform: translateY(0); transition-delay: 100ms; }
-    .journey__story { opacity: 1; transform: translateY(0); transition-delay: 200ms; }
-    .journey__mindset { opacity: 1; transform: translateY(0); transition-delay: 300ms; }
-    .journey__skills .journey__skill { opacity: 1; transform: scale(1); }
-    .journey__images { opacity: 1; }
+    .journey__node { transform: translateX(-50%); }
   }
 }
 
@@ -309,8 +298,7 @@ onUnmounted(() => {
   height: 14px;
   background: #FF6B00;
   border-radius: 50%;
-  transform: translateX(-50%) scale(0);
-  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform: translateX(-50%);
   box-shadow: 0 0 12px rgba(255, 107, 0, 0.6);
   z-index: 2;
 
@@ -330,9 +318,6 @@ onUnmounted(() => {
   padding: 4px 14px;
   border-radius: 6px;
   margin-bottom: 8px;
-  opacity: 0;
-  transform: translateY(10px);
-  transition: opacity 0.4s ease, transform 0.4s ease;
 }
 
 .journey__title {
@@ -342,9 +327,6 @@ onUnmounted(() => {
   color: #fff;
   letter-spacing: 0.01em;
   margin-bottom: 12px;
-  opacity: 0;
-  transform: translateY(10px);
-  transition: opacity 0.4s ease, transform 0.4s ease;
 }
 
 .journey__story {
@@ -353,9 +335,7 @@ onUnmounted(() => {
   color: #E0E0E0;
   line-height: 1.8;
   margin-bottom: 16px;
-  opacity: 0;
-  transform: translateY(10px);
-  transition: opacity 0.4s ease, transform 0.4s ease;
+  white-space: pre-line;
 }
 
 /* Mindset shift */
@@ -368,9 +348,6 @@ onUnmounted(() => {
   display: flex;
   gap: 10px;
   align-items: flex-start;
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.4s ease, transform 0.4s ease;
 
   &-icon { font-size: 1.1rem; flex-shrink: 0; }
   p { color: #E0E0E0; font-family: "Space Mono", monospace; font-size: 0.85rem; font-style: italic; margin: 0; line-height: 1.6; }
@@ -393,13 +370,6 @@ onUnmounted(() => {
   border: 1px solid #FF6B00;
   color: #fff;
   background: #0D2247;
-  opacity: 0;
-  transform: scale(0);
-  transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-
-  @for $i from 1 through 10 {
-    &:nth-child(#{$i}) { transition-delay: #{400 + ($i * 50)}ms; }
-  }
 
   &:hover {
     box-shadow: 0 0 10px rgba(255, 107, 0, 0.4);
@@ -412,8 +382,6 @@ onUnmounted(() => {
   display: flex;
   gap: 12px;
   flex-wrap: wrap;
-  opacity: 0;
-  transition: opacity 0.5s ease 500ms;
 }
 
 .journey__polaroid {
@@ -468,14 +436,6 @@ onUnmounted(() => {
 
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
-  .journey__chapter { opacity: 1; transform: none; }
-  .journey__chapter--visible .journey__year,
-  .journey__chapter--visible .journey__title,
-  .journey__chapter--visible .journey__story,
-  .journey__chapter--visible .journey__mindset,
-  .journey__chapter--visible .journey__skills .journey__skill,
-  .journey__chapter--visible .journey__images { opacity: 1; transform: none; }
-  .journey__node { transform: translateX(-50%) scale(1); }
   .journey__timeline-line { transform: scaleY(1); }
 }
 </style>
