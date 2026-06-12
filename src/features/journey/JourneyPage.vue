@@ -201,10 +201,7 @@ onMounted(load);
 
   &-content {
     max-width: 100%;
-    background: #0A1628;
-    margin: 0 calc(var(--space-outer, 24px) * -1);
-    padding: 40px var(--space-outer, 24px);
-    border-radius: 20px 20px 0 0;
+    padding: 40px 0;
     min-height: 60vh;
   }
 

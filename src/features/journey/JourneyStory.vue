@@ -173,37 +173,33 @@ onUnmounted(() => { observer?.disconnect(); window.removeEventListener("scroll",
 }
 
 /* Timeline (DO NOT TOUCH scroll logic) */
-.journey__timeline { position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; transform: translateX(-50%); }
+.journey__timeline { position: absolute; left: 30px; top: 0; bottom: 0; width: 2px; }
 .journey__timeline-line { width: 100%; height: 100%; background: #FF6B00; transform-origin: top; border-radius: 2px; box-shadow: 0 0 8px rgba(255,107,0,0.3); }
 
-/* Chapter layout */
+/* Chapter layout — single column with timeline on left */
 .journey__chapter {
   position: relative;
-  padding: 40px 0;
+  padding: 32px 0 32px 70px;
   display: flex;
-  width: 44%;
-  min-width: 300px;
+  width: 100%;
+  margin-bottom: 20px;
 }
-.journey__chapter--odd { margin-left: 0; margin-right: auto; padding-right: 50px; }
-.journey__chapter--even { margin-left: auto; margin-right: 0; padding-left: 50px; }
 
 @media (max-width: 768px) {
-  .journey__chapter { width: 85%; margin: 0 auto !important; padding: 24px 0 24px 50px !important; }
-  .journey__timeline { left: 20px; }
-  .journey__node { left: 20px !important; }
+  .journey__chapter { padding-left: 50px; }
 }
 
 /* Node dot */
 .journey__node {
   position: absolute;
-  left: 50%;
-  top: 52px;
+  left: 30px;
+  top: 44px;
   width: 16px;
   height: 16px;
   background: #FF6B00;
   border-radius: 50%;
   transform: translateX(-50%);
-  border: 3px solid #0A1628;
+  border: 3px solid #F0EBE0;
   box-shadow: 0 0 12px rgba(255,107,0,0.6);
   z-index: 2;
 }
@@ -212,7 +208,7 @@ onUnmounted(() => { observer?.disconnect(); window.removeEventListener("scroll",
 .journey__content { width: 100%; }
 
 /* ═══════════════════════════════════════════
-   FIX 3 — THEME COLORS
+   CREAM THEME — dark text on cream background
    ═══════════════════════════════════════════ */
 .journey__year {
   display: inline-block;
@@ -228,7 +224,7 @@ onUnmounted(() => { observer?.disconnect(); window.removeEventListener("scroll",
   font-family: "Poppins", sans-serif;
   font-weight: 700;
   font-size: 1.35rem;
-  color: #FFFFFF;
+  color: #1A1A1A;
   margin-bottom: 14px;
 }
 
@@ -236,14 +232,14 @@ onUnmounted(() => { observer?.disconnect(); window.removeEventListener("scroll",
   font-family: "Poppins", sans-serif;
   font-size: 0.98rem;
   font-weight: 400;
-  color: #C8D0DC;
+  color: #333;
   line-height: 1.8;
   margin-bottom: 16px;
   white-space: pre-line;
 }
 
 .journey__mindset {
-  background: #0D1F3C;
+  background: #FFF3E0;
   border-left: 3px solid #FF6B00;
   border-radius: 0 8px 8px 0;
   padding: 12px 16px;
@@ -252,7 +248,7 @@ onUnmounted(() => { observer?.disconnect(); window.removeEventListener("scroll",
   gap: 10px;
   align-items: flex-start;
   &-icon { font-size: 1.1rem; color: #FF6B00; }
-  p { color: #E0E0E0; font-family: "Space Mono", monospace; font-size: 0.85rem; font-style: italic; margin: 0; line-height: 1.6; }
+  p { color: #333; font-family: "Space Mono", monospace; font-size: 0.85rem; font-style: italic; margin: 0; line-height: 1.6; }
 }
 
 .journey__skills { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
@@ -263,23 +259,24 @@ onUnmounted(() => { observer?.disconnect(); window.removeEventListener("scroll",
   padding: 4px 12px;
   border-radius: 20px;
   border: 1px solid #FF6B00;
-  color: #FFFFFF;
-  background: #0D2247;
-  &:hover { box-shadow: 0 0 10px rgba(255,107,0,0.4); background: #1A3A5C; }
+  color: #FF6B00;
+  background: rgba(255,107,0,0.05);
+  &:hover { box-shadow: 0 0 10px rgba(255,107,0,0.3); background: rgba(255,107,0,0.1); }
 }
 
 .journey__images { display: flex; gap: 12px; flex-wrap: wrap; }
 .journey__polaroid {
-  background: #0D1F3C;
+  background: #fff;
   border: 2px solid #FF6B00;
   border-radius: 6px;
   padding: 6px;
   width: 140px;
   cursor: pointer;
   transition: transform 0.3s, box-shadow 0.3s;
-  &:hover { transform: rotate(0deg) scale(1.05) !important; box-shadow: 0 0 16px rgba(255,107,0,0.3); z-index: 10; }
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  &:hover { transform: rotate(0deg) scale(1.05) !important; box-shadow: 0 4px 20px rgba(255,107,0,0.2); z-index: 10; }
   img { width: 100%; height: 90px; object-fit: cover; border-radius: 4px; }
-  p { font-family: "Space Mono", monospace; font-size: 0.65rem; color: #E0E0E0; margin-top: 4px; text-align: center; }
+  p { font-family: "Space Mono", monospace; font-size: 0.65rem; color: #555; margin-top: 4px; text-align: center; }
 }
 
 /* Lightbox */
@@ -329,18 +326,5 @@ onUnmounted(() => { observer?.disconnect(); window.removeEventListener("scroll",
   0%   { box-shadow: 0 0 0 0 rgba(255,107,0,0.6); }
   70%  { box-shadow: 0 0 0 10px rgba(255,107,0,0); }
   100% { box-shadow: 0 0 0 0 rgba(255,107,0,0); }
-}
-
-/* Reduced motion — disable all animations */
-@media (prefers-reduced-motion: reduce) {
-  .anim-ready .journey__chapter,
-  .anim-ready .journey__year,
-  .anim-ready .journey__title,
-  .anim-ready .journey__story-text,
-  .anim-ready .journey__mindset,
-  .anim-ready .journey__skill,
-  .anim-ready .journey__polaroid,
-  .anim-ready .journey__node { opacity: 1 !important; transform: none !important; transition: none !important; animation: none !important; }
-  .journey__timeline-line { transform: scaleY(1) !important; }
 }
 </style>
