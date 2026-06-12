@@ -181,7 +181,7 @@ onMounted(load);
     &-active { background: var(--color-text-400, #1a1a2e); color: #fff; &:hover { color: #fff; } }
   }
 
-  &-content { max-width: 800px; }
+  &-content { max-width: 100%; }
 
   &-posts { display: flex; flex-direction: column; gap: 16px; }
   &-post {
